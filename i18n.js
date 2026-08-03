@@ -6,7 +6,10 @@ const X2T_I18N = {
     bgLight: "ライト",
     bgDark: "ダーク",
     filterLabel: "ネガティブニュースを隠す",
+    splashLabel: "スプラッシュ演出",
+    birdsLabel: "鳥の演出",
     langLabel: "表示言語",
+    footNote: "ブラウザ内のみで動作",
     splashSub: "優しいTwitterへ、ようこそ"
   },
   en: {
@@ -16,7 +19,10 @@ const X2T_I18N = {
     bgLight: "Light",
     bgDark: "Dark",
     filterLabel: "Hide negative news",
+    splashLabel: "Splash animation",
+    birdsLabel: "Floating birds",
     langLabel: "Language",
+    footNote: "Runs locally in your browser",
     splashSub: "Welcome back to the gentle Twitter"
   }
 };

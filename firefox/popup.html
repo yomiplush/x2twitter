@@ -5,12 +5,13 @@
 <style>
   :root {
     --bg: #ffffff;
-    --bg-soft: #f6f8f9;
+    --bg-soft: #f2f7fb;
     --text: #0f1419;
     --text-dim: #536471;
-    --border: #e6e9eb;
+    --border: #e1e8ed;
     --accent: #1DA1F2;
     --accent-strong: #0d8bdb;
+    --accent-soft: rgba(29, 161, 242, .12);
     --shadow: 0 8px 24px rgba(15, 20, 25, .12);
   }
   @media (prefers-color-scheme: dark) {
@@ -20,15 +21,16 @@
       --text: #f7f9f9;
       --text-dim: #8b98a5;
       --border: #2f3b48;
+      --accent-soft: rgba(29, 161, 242, .18);
       --shadow: 0 8px 24px rgba(0, 0, 0, .4);
     }
   }
   * { box-sizing: border-box; }
   body {
-    width: 260px;
+    width: 280px;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
   }
@@ -36,24 +38,30 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 16px;
+    padding: 16px;
     background: linear-gradient(135deg, #1DA1F2, #0d8bdb 60%, #0a73b8);
     color: #fff;
+    position: relative;
+    overflow: hidden;
   }
-  .head svg { width: 26px; height: 26px; flex: none; }
-  .head h1 {
-    font-size: 14px;
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: .2px;
+  .head::after {
+    content: "";
+    position: absolute;
+    right: -18px; top: -18px;
+    width: 84px; height: 84px;
+    background: radial-gradient(circle, rgba(255, 255, 255, .18), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
   }
-  .head p {
-    margin: 2px 0 0;
-    font-size: 10.5px;
-    opacity: .85;
+  .head svg {
+    width: 28px; height: 28px;
+    flex: none;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .15));
   }
-  .body { padding: 14px 16px 16px; }
-  .label { font-size: 12px; margin: 0 0 8px; color: var(--text-dim); }
+  .head h1 { font-size: 15px; margin: 0; font-weight: 800; letter-spacing: .2px; }
+  .head p { margin: 2px 0 0; font-size: 11px; opacity: .85; }
+  .body { padding: 14px 16px 14px; }
+  .label { font-size: 11px; margin: 0 0 8px; color: var(--text-dim); font-weight: 600; letter-spacing: .3px; }
   .seg {
     display: flex;
     background: var(--bg-soft);
@@ -66,35 +74,41 @@
     flex: 1;
     border: none;
     background: transparent;
-    padding: 7px 0;
+    padding: 8px 0;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
     color: var(--text-dim);
     transition: all .18s ease;
   }
+  .seg button:hover { color: var(--text); }
   .seg button.active {
     background: var(--accent);
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
     box-shadow: var(--shadow);
   }
-  .divider { height: 1px; background: var(--border); margin: 14px 0 12px; }
+  .divider { height: 1px; background: var(--border); margin: 2px 0 12px; }
   .row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
     font-weight: 500;
+    padding: 7px 8px;
+    margin: 0 -8px;
+    border-radius: 10px;
+    transition: background-color .15s ease;
   }
+  .row:hover { background: var(--accent-soft); }
   .switch { position: relative; width: 44px; height: 24px; flex: none; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
     position: absolute; inset: 0;
     background: var(--border);
     border-radius: 24px;
-    transition: .2s ease;
+    transition: background-color .2s ease;
     cursor: pointer;
   }
   .slider:before {
@@ -104,11 +118,21 @@
     left: 3px; top: 3px;
     background: #fff;
     border-radius: 50%;
-    transition: .2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    transition: transform .2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   }
   input:checked + .slider { background: var(--accent); }
   input:checked + .slider:before { transform: translateX(20px); }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 12px;
+    font-size: 10px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+  .foot .ver { font-weight: 600; }
 </style>
 </head>
 <body>
@@ -120,7 +144,7 @@
     </div>
   </div>
   <div class="body">
-    <p class="label" data-i18n="bgLabel"></p>
+    <div class="label" data-i18n="bgLabel"></div>
     <div class="seg" id="seg">
       <button data-mode="auto" data-i18n="bgAuto"></button>
       <button data-mode="light" data-i18n="bgLight"></button>
@@ -129,17 +153,26 @@
     <div class="divider"></div>
     <label class="row">
       <span data-i18n="filterLabel"></span>
-      <span class="switch">
-        <input type="checkbox" id="filter">
-        <span class="slider"></span>
-      </span>
+      <span class="switch"><input type="checkbox" id="filter"><span class="slider"></span></span>
+    </label>
+    <label class="row">
+      <span data-i18n="splashLabel"></span>
+      <span class="switch"><input type="checkbox" id="splash"><span class="slider"></span></span>
+    </label>
+    <label class="row">
+      <span data-i18n="birdsLabel"></span>
+      <span class="switch"><input type="checkbox" id="birds"><span class="slider"></span></span>
     </label>
     <div class="divider"></div>
-    <p class="label" data-i18n="langLabel"></p>
+    <div class="label" data-i18n="langLabel"></div>
     <div class="seg" id="langSeg">
       <button data-lang="ja">日本語</button>
       <button data-lang="en">English</button>
     </div>
+  </div>
+  <div class="foot">
+    <span data-i18n="footNote"></span>
+    <span class="ver">v1.1.0</span>
   </div>
   <script src="i18n.js"></script>
   <script src="compat.js"></script>

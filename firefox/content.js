@@ -6,6 +6,7 @@
 
   const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "INPUT", "CODE", "PRE"]);
 
+  // ===== ブランド置換（X → Twitter 2）=====
   function hasX(text) {
     return /\bX\b|\u{1D54F}/u.test(text || "");
   }
@@ -20,6 +21,7 @@
     if (val && hasX(val)) el.setAttribute(attr, rebrandText(val));
   }
 
+  // ===== ネガティブ判定ワード（強/弱シグナル＋例外）=====
   const EN = w => `\\b${w}\\b`;
   const STRONG_JP = [
     "政治", "国際政治", "世界政治", "国政", "政局", "総理", "首相", "選挙", "国会", "衆議院", "参議院",
@@ -94,19 +96,24 @@
 
   const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
   const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
-  const NEGATIVE_WEAK = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "i");
+  const NEGATIVE_WEAK_G = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "gi");
 
   let filterOn = false;
   const hiddenTweets = new Set();
+
+  // ===== フィルター =====
+  function countWeakHits(text) {
+    NEGATIVE_WEAK_G.lastIndex = 0;
+    let hits = 0;
+    while (hits < 2 && NEGATIVE_WEAK_G.exec(text)) hits++;
+    return hits;
+  }
 
   function matchesNegative(el) {
     const t = el.textContent || "";
     if (NEGATIVE_EXCEPT.test(t)) return false;
     if (NEGATIVE_STRONG.test(t)) return true;
-    const re = new RegExp(NEGATIVE_WEAK.source, "gi");
-    let hits = 0;
-    while (hits < 2 && re.exec(t)) hits++;
-    return hits >= 2;
+    return countWeakHits(t) >= 2;
   }
 
   function hideTweet(art) {
@@ -136,108 +143,7 @@
     else restoreTimeline();
   }
 
-  let transition = null;
-
-  function setupPageTransitions() {
-    if (transition) return;
-    const overlay = document.createElement("div");
-    overlay.id = "x2t-overlay";
-    overlay.setAttribute("aria-hidden", "true");
-    const state = {
-      overlay,
-      navTimer: null,
-      ensure() {
-        if (!overlay.isConnected) document.documentElement.appendChild(overlay);
-      },
-      fadeIn() {
-        this.ensure();
-        overlay.style.opacity = "1";
-      },
-      fadeOut() {
-        this.ensure();
-        overlay.style.opacity = "0";
-      },
-      styleOverlay() {
-        const dark = resolveMode() === "dark";
-        overlay.style.cssText = `
-          position: fixed; inset: 0; z-index: 2147483647;
-          pointer-events: none; opacity: 0;
-          transition: opacity .3s cubic-bezier(.4,0,.2,1);
-          background: ${dark
-            ? "radial-gradient(circle at 50% 40%, rgba(29,161,242,.10), transparent 70%), rgba(8,12,16,.28)"
-            : "radial-gradient(circle at 50% 40%, rgba(255,255,255,.5), transparent 70%), rgba(192,222,237,.30)"};
-        `;
-      }
-    };
-
-    function column() {
-      return document.querySelector('[data-testid="primaryColumn"]');
-    }
-    function applyColumn(on) {
-      const col = column();
-      if (!col) return;
-      col.style.transition = "opacity .3s cubic-bezier(.4,0,.2,1)";
-      col.style.opacity = on ? "0" : "";
-    }
-    function finishNav() {
-      if (!transition) return;
-      clearTimeout(transition.navTimer);
-      transition.navTimer = null;
-      applyColumn(false);
-      transition.fadeOut();
-      fixFavicon();
-    }
-    function beginNav() {
-      if (!transition) return;
-      clearTimeout(transition.navTimer);
-      applyColumn(true);
-      transition.fadeIn();
-      transition.navTimer = setTimeout(finishNav, 600);
-    }
-
-    state.finishNav = finishNav;
-    state.beginNav = beginNav;
-    transition = state;
-    state.ensure();
-    state.styleOverlay();
-
-    document.addEventListener("click", e => {
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
-      if (!a || a.target === "_blank") return;
-      let href = a.getAttribute("href") || "";
-      if (!href) return;
-      if (/^(https?:)?\/\//.test(href)) {
-        try { if (new URL(href, location.href).origin !== location.origin) return; }
-        catch { return; }
-      } else if (/^(#|mailto:|tel:|javascript:)/.test(href)) {
-        return;
-      }
-      beginNav();
-    }, true);
-
-    function scheduleFinish() {
-      if (!transition) return;
-      if (transition.navTimer) {
-        clearTimeout(transition.navTimer);
-        transition.navTimer = setTimeout(finishNav, 260);
-      }
-    }
-    ["pushState", "replaceState"].forEach(m => {
-      const orig = history[m];
-      history[m] = function (...args) {
-        const r = orig.apply(this, args);
-        scheduleFinish();
-        return r;
-      };
-    });
-    window.addEventListener("popstate", () => {
-      beginNav();
-      scheduleFinish();
-    });
-    setInterval(fixFavicon, 5000);
-  }
-
+  // ===== 全体スタイル注入 =====
   function injectUI() {
     if (document.getElementById("x2t-ui")) return;
     const style = document.createElement("style");
@@ -293,6 +199,7 @@
     document.head.appendChild(style);
   }
 
+  // ===== ロゴ・ファビコン =====
   function findLogo() {
     const candidates = document.querySelectorAll('a[href="/"]');
     for (const a of candidates) {
@@ -369,6 +276,8 @@
 
   let currentMode = "auto";
   let currentLang = x2tDetectLang();
+  let currentSplash = true;
+  let currentBirds = true;
 
   function detectSiteTheme() {
     const cs = getComputedStyle(document.documentElement).colorScheme || "";
@@ -382,6 +291,7 @@
   }
 
   let bgApplying = false;
+  // ===== 背景モード（自動/ライト/ダーク）=====
   function applyBackground() {
     if (bgApplying) return;
     bgApplying = true;
@@ -443,7 +353,6 @@
     if (document.documentElement.style.getPropertyValue("--x2t-bird-color") !== birdColor) {
       document.documentElement.style.setProperty("--x2t-bird-color", birdColor);
     }
-    if (transition && transition.styleOverlay) transition.styleOverlay();
     } finally {
       bgApplying = false;
     }
@@ -485,7 +394,9 @@
     }
   }
 
+  // ===== 環境演出（浮かぶ鳥・飛ぶ鳥）=====
   function injectAmbientBirds() {
+    if (!currentBirds) return;
     if (document.getElementById("x2t-birds")) return;
     const c = document.createElement("div");
     c.id = "x2t-birds";
@@ -497,21 +408,21 @@
           position: fixed; inset: 0; z-index: -1;
           pointer-events: none; overflow: hidden;
         }
-        #x2t-birds .bird { position: absolute; opacity: .5; }
+        #x2t-birds .bird { position: absolute; opacity: .5; filter: drop-shadow(0 2px 6px rgba(29,161,242,.18)); }
         #x2t-birds .b1 { left: 6%;  top: 16%; width: 44px; height: 44px; animation: x2t-float 7s ease-in-out infinite alternate; }
         #x2t-birds .b2 { left: 88%; top: 34%; width: 32px; height: 32px; animation: x2t-float 9s ease-in-out 1.2s infinite alternate; }
         #x2t-birds .b3 { left: 4%;  top: 70%; width: 30px; height: 30px; animation: x2t-float 8s ease-in-out 2s infinite alternate; }
         #x2t-birds .b4 { left: 89%; top: 78%; width: 38px; height: 38px; animation: x2t-float 10s ease-in-out .6s infinite alternate; }
-        #x2t-birds .f1 { left: -70px; top: 24%; width: 30px; height: 30px; opacity: .32; animation: x2t-fly 34s linear infinite; }
-        #x2t-birds .f2 { left: -70px; top: 64%; width: 24px; height: 24px; opacity: .26; animation: x2t-fly 46s linear 12s infinite; }
+        #x2t-birds .f1 { left: -70px; top: 24%; width: 30px; height: 30px; opacity: .3; animation: x2t-fly 34s linear infinite; }
+        #x2t-birds .f2 { left: -70px; top: 64%; width: 24px; height: 24px; opacity: .24; animation: x2t-fly 46s linear 12s infinite; }
         @keyframes x2t-float {
-          from { transform: translateY(0) rotate(-4deg); }
-          to   { transform: translateY(-20px) rotate(4deg); }
+          from { transform: translateY(0) rotate(-5deg); }
+          to   { transform: translateY(-22px) rotate(5deg); }
         }
         @keyframes x2t-fly {
-          0%   { transform: translateX(0) translateY(0); }
-          50%  { transform: translateX(52vw) translateY(-24px); }
-          100% { transform: translateX(105vw) translateY(0); }
+          0%   { transform: translateX(0) translateY(0) rotate(-8deg); }
+          50%  { transform: translateX(52vw) translateY(-26px) rotate(2deg); }
+          100% { transform: translateX(105vw) translateY(0) rotate(8deg); }
         }
       </style>
       <span class="bird b1">${bird}</span>
@@ -524,7 +435,9 @@
     document.body.appendChild(c);
   }
 
+  // ===== スプラッシュ画面 =====
   function showSplash() {
+    if (!currentSplash) return;
     if (window.top !== window) return;
     if (document.getElementById("x2t-splash")) return;
     const splash = document.createElement("div");
@@ -535,13 +448,11 @@
           position: fixed; inset: 0; z-index: 2147483647;
           display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
           background: linear-gradient(135deg, #1DA1F2 0%, #0d8bdb 55%, #0a73b8 100%);
-          opacity: 1;
-          transition: opacity .55s ease;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         }
-        #x2t-splash.x2t-splash-hide { opacity: 0; }
         #x2t-splash .x2t-splash-bird {
           width: 92px; height: 92px;
+          filter: drop-shadow(0 6px 18px rgba(0,0,0,.22));
           animation: x2t-splash-pulse 1.15s ease-in-out infinite;
         }
         #x2t-splash .x2t-splash-title { color: #fff; font-size: 24px; font-weight: 800; letter-spacing: .5px; }
@@ -558,16 +469,15 @@
       </div>
     `;
     document.documentElement.appendChild(splash);
-    setTimeout(() => splash.classList.add("x2t-splash-hide"), 1150);
-    setTimeout(() => splash.remove(), 1750);
+    setTimeout(() => splash.remove(), 1300);
   }
 
+  // ===== 起動・DOM監視 =====
   function fixAll() {
     injectAmbientBirds();
     fixTitle();
     fixFavicon();
     applyBackground();
-    setupPageTransitions();
     injectUI();
     walk(document.body);
     fixLogos(document);
@@ -605,12 +515,6 @@
   function handleAdded(el) {
     if (el.nodeType !== Node.ELEMENT_NODE) return;
     if (isOrContainsLogo(el)) queueLogoFix();
-    if (transition && transition.navTimer &&
-        (el.tagName === "ARTICLE" ||
-         (el.querySelector && el.querySelector('article[data-testid="tweet"], [data-testid="primaryColumn"]')))) {
-      clearTimeout(transition.navTimer);
-      transition.navTimer = setTimeout(() => transition.finishNav(), 180);
-    }
   }
 
   const observer = new MutationObserver(mutations => {
@@ -635,9 +539,12 @@
   });
 
   fixAll();
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tLang"], ({ x2tMode, x2tFilter, x2tLang }) => {
+  setInterval(fixFavicon, 5000);
+  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
+    currentSplash = x2tSplash !== false;
+    currentBirds = x2tBirds !== false;
     showSplash();
     applyBackground();
     setFilter(!!x2tFilter);
@@ -649,6 +556,14 @@
       applyBackground();
     }
     if (changes.x2tFilter) setFilter(!!changes.x2tFilter.newValue);
+    if (changes.x2tSplash) {
+      currentSplash = !!changes.x2tSplash.newValue;
+      if (currentSplash) showSplash();
+    }
+    if (changes.x2tBirds) {
+      currentBirds = !!changes.x2tBirds.newValue;
+      if (currentBirds) injectAmbientBirds();
+    }
   });
   observer.observe(document.documentElement, {
     childList: true,
