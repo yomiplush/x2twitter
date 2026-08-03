@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f6f8f9;
+    --text: #0f1419;
+    --text-dim: #536471;
+    --border: #e6e9eb;
+    --accent: #1DA1F2;
+    --accent-strong: #0d8bdb;
+    --shadow: 0 8px 24px rgba(15, 20, 25, .12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15202b;
+      --bg-soft: #1e2a36;
+      --text: #f7f9f9;
+      --text-dim: #8b98a5;
+      --border: #2f3b48;
+      --shadow: 0 8px 24px rgba(0, 0, 0, .4);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    width: 260px;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #1DA1F2, #0d8bdb 60%, #0a73b8);
+    color: #fff;
+  }
+  .head svg { width: 26px; height: 26px; flex: none; }
+  .head h1 {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: .2px;
+  }
+  .head p {
+    margin: 2px 0 0;
+    font-size: 10.5px;
+    opacity: .85;
+  }
+  .body { padding: 14px 16px 16px; }
+  .label { font-size: 12px; margin: 0 0 8px; color: var(--text-dim); }
+  .seg {
+    display: flex;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .seg button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 7px 0;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-dim);
+    transition: all .18s ease;
+  }
+  .seg button.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+  }
+  .divider { height: 1px; background: var(--border); margin: 14px 0 12px; }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .switch { position: relative; width: 44px; height: 24px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 24px;
+    transition: .2s ease;
+    cursor: pointer;
+  }
+  .slider:before {
+    content: "";
+    position: absolute;
+    height: 18px; width: 18px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  input:checked + .slider { background: var(--accent); }
+  input:checked + .slider:before { transform: translateX(20px); }
+</style>
+</head>
+<body>
+  <div class="head">
+    <svg viewBox="0 0 24 24"><path fill="#fff" d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+    <div>
+      <h1 id="t-extName">X to Twitter 2</h1>
+      <p id="t-headTagline"></p>
+    </div>
+  </div>
+  <div class="body">
+    <p class="label" data-i18n="bgLabel"></p>
+    <div class="seg" id="seg">
+      <button data-mode="auto" data-i18n="bgAuto"></button>
+      <button data-mode="light" data-i18n="bgLight"></button>
+      <button data-mode="dark" data-i18n="bgDark"></button>
+    </div>
+    <div class="divider"></div>
+    <label class="row">
+      <span data-i18n="filterLabel"></span>
+      <span class="switch">
+        <input type="checkbox" id="filter">
+        <span class="slider"></span>
+      </span>
+    </label>
+    <div class="divider"></div>
+    <p class="label" data-i18n="langLabel"></p>
+    <div class="seg" id="langSeg">
+      <button data-lang="ja">日本語</button>
+      <button data-lang="en">English</button>
+    </div>
+  </div>
+  <script src="i18n.js"></script>
+  <script src="compat.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -62,6 +62,20 @@
 
 ---
 
+## 🦊 Firefox版
+
+Firefox 109+ 対応版が `firefox/` にあります（`compat.js` で `chrome`/`browser` API を両対応）。
+
+1. **Zipをダウンロード** → Releaseページの `x2twitter-firefox.zip` を取得
+2. Zipを解凍
+3. Firefoxで `about:debugging#/runtime/this-firefox` を開く
+4. **「一時アドオンを読み込む…」** → 解凍したフォルダ内の `manifest.json` を選択
+5. x.com を開く 🎉
+
+※ 一時読み込みはFirefox再起動で解除されます。長期間使う場合はAMO署名を推奨。
+
+---
+
 ## 🎛️ 使い方
 
 ### 背景モード切替
@@ -84,7 +98,7 @@
 | 対象サイト | `*.x.com/*`, `*.twitter.com/*` |
 | 権限 | `storage` のみ（データ収集は一切なし） |
 | 必要ランタイム | 無し（依存ライブラリ不使用・ネイティブJSのみ） |
-| ファイル | `manifest.json` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/` |
+| ファイル | `manifest.json` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/`（Firefox版は `firefox/`） |
 
 ### 技術メモ
 - **テキスト置換**: `MutationObserver` でSPAの動的コンテンツにも追従。入力欄・textarea・contenteditableは置換しない（ツイート入力が壊れない）
@@ -104,6 +118,7 @@ x2twitter/
 ├── content.js         # メイン処理（置換・演出・フィルター）
 ├── popup.html         # 拡張ポップアップUI
 ├── popup.js           # ポップアップ制御
+├── firefox/           # Firefox版（compat.js + gecko manifest）
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
