@@ -284,6 +284,17 @@
   let currentLang = x2tDetectLang();
   let currentSplash = true;
   let currentBirds = true;
+  let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
+  let wallpaperOn = false;
+  let wallpaperUrl = "";
+
+  function sanitizeUrl(u) {
+    if (!u) return "";
+    try {
+      const x = new URL(u, location.href);
+      return /^https?:$/.test(x.protocol) ? x.href : "";
+    } catch { return ""; }
+  }
 
   function detectSiteTheme() {
     const cs = getComputedStyle(document.documentElement).colorScheme || "";
@@ -297,68 +308,108 @@
   }
 
   let bgApplying = false;
-  // ===== 背景モード（自動/ライト/ダーク）=====
+  // ===== 背景モード（自動/ライト/ダーク/カスタム）＋壁紙 =====
   function applyBackground() {
     if (bgApplying) return;
     bgApplying = true;
     try {
       const mode = resolveMode();
+      const isCustom = mode === "custom";
+      const custom = customColors || { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
+      const wallpaper = sanitizeUrl(wallpaperUrl);
+
+      const appShell = `
+        body { background: transparent !important; }
+        #react-root,
+        #react-root > div,
+        #layers { background-color: transparent !important; }
+      `;
       const light = `
-      html {
-        background-color: #C0DEED !important;
-        background-image:
-          radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0, transparent 45%),
-          radial-gradient(circle at 80% 70%, rgba(29,161,242,0.18) 0, transparent 50%),
-          linear-gradient(180deg, #C0DEED 0%, #8EC5E8 100%) !important;
-        background-attachment: fixed !important;
+        html {
+          background-color: #C0DEED !important;
+          background-image:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0, transparent 45%),
+            radial-gradient(circle at 80% 70%, rgba(29,161,242,0.18) 0, transparent 50%),
+            linear-gradient(180deg, #C0DEED 0%, #8EC5E8 100%) !important;
+          background-attachment: fixed !important;
+        }
+        ${appShell}
+        body, body * {
+          text-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.2) !important;
+        }
+      `;
+      const dark = `
+        html {
+          background-color: #15202B !important;
+          background-image:
+            radial-gradient(circle at 80% 20%, rgba(29,161,242,0.15) 0, transparent 45%),
+            radial-gradient(circle at 20% 90%, rgba(29,161,242,0.08) 0, transparent 50%),
+            linear-gradient(180deg, #1B2A3A 0%, #15202B 100%) !important;
+          background-attachment: fixed !important;
+        }
+        body { background: transparent !important; }
+        header,
+        header *,
+        nav[aria-label="Primary"],
+        nav[aria-label="Primary"] *,
+        [data-testid="SideNav_AccountSwitcher_Button"] {
+          color: #f7f9f9 !important;
+        }
+        nav[aria-label="Primary"] a:hover,
+        nav[aria-label="Primary"] button:hover,
+        [data-testid="SideNav_AccountSwitcher_Button"]:hover {
+          background-color: rgba(255,255,255,0.08) !important;
+        }
+        body, body * {
+          text-shadow: 0 1px 2px rgba(0,0,0,0.5), 0 0 3px rgba(0,0,0,0.35) !important;
+        }
+      `;
+      const customCss = `
+        html {
+          background-color: ${custom.top} !important;
+          background-image:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.28) 0, transparent 45%),
+            radial-gradient(circle at 80% 70%, ${custom.accent}33 0, transparent 50%),
+            linear-gradient(180deg, ${custom.top} 0%, ${custom.bottom} 100%) !important;
+          background-attachment: fixed !important;
+        }
+        ${appShell}
+        body, body * {
+          text-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.2) !important;
+        }
+      `;
+      const wallpaperCss = `
+        html {
+          background-color: ${isCustom ? custom.top : mode === "dark" ? "#15202B" : "#C0DEED"} !important;
+          background-image: url("${wallpaper}") !important;
+          background-size: cover !important;
+          background-position: center !important;
+          background-attachment: fixed !important;
+        }
+        ${appShell}
+        body, body * {
+          text-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 3px rgba(0,0,0,0.25) !important;
+        }
+      `;
+
+      let css;
+      if (wallpaperOn && wallpaper) css = wallpaperCss;
+      else if (isCustom) css = customCss;
+      else css = mode === "dark" ? dark : light;
+
+      let style = document.getElementById("x2t-bg");
+      if (!style) {
+        style = document.createElement("style");
+        style.id = "x2t-bg";
+        document.head.appendChild(style);
       }
-      body { background: transparent !important; }
-      #react-root,
-      #react-root > div,
-      #layers {
-        background-color: transparent !important;
+      style.textContent = css;
+      const birdColor = isCustom
+        ? custom.accent
+        : mode === "dark" ? "rgba(140,200,255,0.9)" : "rgba(29,161,242,0.85)";
+      if (document.documentElement.style.getPropertyValue("--x2t-bird-color") !== birdColor) {
+        document.documentElement.style.setProperty("--x2t-bird-color", birdColor);
       }
-      body, body * {
-        text-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.2) !important;
-      }
-    `;
-    const dark = `
-      html {
-        background-color: #15202B !important;
-        background-image:
-          radial-gradient(circle at 80% 20%, rgba(29,161,242,0.15) 0, transparent 45%),
-          radial-gradient(circle at 20% 90%, rgba(29,161,242,0.08) 0, transparent 50%),
-          linear-gradient(180deg, #1B2A3A 0%, #15202B 100%) !important;
-        background-attachment: fixed !important;
-      }
-      body { background: transparent !important; }
-      header,
-      header *,
-      nav[aria-label="Primary"],
-      nav[aria-label="Primary"] *,
-      [data-testid="SideNav_AccountSwitcher_Button"] {
-        color: #f7f9f9 !important;
-      }
-      nav[aria-label="Primary"] a:hover,
-      nav[aria-label="Primary"] button:hover,
-      [data-testid="SideNav_AccountSwitcher_Button"]:hover {
-        background-color: rgba(255,255,255,0.08) !important;
-      }
-      body, body * {
-        text-shadow: 0 1px 2px rgba(0,0,0,0.5), 0 0 3px rgba(0,0,0,0.35) !important;
-      }
-    `;
-    let style = document.getElementById("x2t-bg");
-    if (!style) {
-      style = document.createElement("style");
-      style.id = "x2t-bg";
-      document.head.appendChild(style);
-    }
-    style.textContent = mode === "dark" ? dark : light;
-    const birdColor = mode === "dark" ? "rgba(140,200,255,0.9)" : "rgba(29,161,242,0.85)";
-    if (document.documentElement.style.getPropertyValue("--x2t-bird-color") !== birdColor) {
-      document.documentElement.style.setProperty("--x2t-bird-color", birdColor);
-    }
     } finally {
       bgApplying = false;
     }
@@ -546,11 +597,14 @@
 
   fixAll();
   setInterval(fixFavicon, 5000);
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang }) => {
+  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
     currentBirds = x2tBirds !== false;
+    if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
+    wallpaperUrl = x2tWallpaperUrl || "";
+    wallpaperOn = !!x2tWallpaperOn;
     showSplash();
     applyBackground();
     setFilter(!!x2tFilter);
@@ -569,6 +623,18 @@
     if (changes.x2tBirds) {
       currentBirds = !!changes.x2tBirds.newValue;
       if (currentBirds) injectAmbientBirds();
+    }
+    if (changes.x2tCustom) {
+      if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;
+      applyBackground();
+    }
+    if (changes.x2tWallpaperUrl) {
+      wallpaperUrl = changes.x2tWallpaperUrl.newValue || "";
+      applyBackground();
+    }
+    if (changes.x2tWallpaperOn) {
+      wallpaperOn = !!changes.x2tWallpaperOn.newValue;
+      applyBackground();
     }
   });
   observer.observe(document.documentElement, {

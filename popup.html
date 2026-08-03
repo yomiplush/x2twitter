@@ -89,6 +89,37 @@
     font-weight: 700;
     box-shadow: var(--shadow);
   }
+  .custom-colors { display: none; margin-top: 10px; }
+  .custom-colors.visible { display: block; }
+  .color-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 8px;
+    margin: 0 -8px;
+  }
+  .color-row input[type="color"] {
+    width: 34px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    cursor: pointer;
+  }
+  .url-row { margin-top: 8px; }
+  .url-row input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 12px;
+    outline: none;
+  }
+  .url-row input[type="text"]:focus { border-color: var(--accent); }
   .divider { height: 1px; background: var(--border); margin: 2px 0 12px; }
   .row {
     display: flex;
@@ -149,6 +180,30 @@
       <button data-mode="auto" data-i18n="bgAuto"></button>
       <button data-mode="light" data-i18n="bgLight"></button>
       <button data-mode="dark" data-i18n="bgDark"></button>
+      <button data-mode="custom" data-i18n="bgCustom"></button>
+    </div>
+    <div class="custom-colors" id="customColors">
+      <div class="color-row">
+        <span data-i18n="colorTop"></span>
+        <input type="color" id="colorTop" value="#C0DEED">
+      </div>
+      <div class="color-row">
+        <span data-i18n="colorBottom"></span>
+        <input type="color" id="colorBottom" value="#8EC5E8">
+      </div>
+      <div class="color-row">
+        <span data-i18n="colorAccent"></span>
+        <input type="color" id="colorAccent" value="#1DA1F2">
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="label" data-i18n="wallpaperLabel"></div>
+    <label class="row">
+      <span data-i18n="wallpaperOnLabel"></span>
+      <span class="switch"><input type="checkbox" id="wallpaper"><span class="slider"></span></span>
+    </label>
+    <div class="url-row">
+      <input type="text" id="wallpaperUrl" placeholder="https://example.com/wallpaper.jpg">
     </div>
     <div class="divider"></div>
     <label class="row">
@@ -172,7 +227,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.1.1</span>
+    <span class="ver">v1.2.0</span>
   </div>
   <script src="i18n.js"></script>
   <script src="popup.js"></script>

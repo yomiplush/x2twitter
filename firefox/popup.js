@@ -3,9 +3,18 @@ const langButtons = document.querySelectorAll("#langSeg button");
 const filterToggle = document.getElementById("filter");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
+const customColors = document.getElementById("customColors");
+const colorTop = document.getElementById("colorTop");
+const colorBottom = document.getElementById("colorBottom");
+const colorAccent = document.getElementById("colorAccent");
+const wallpaperToggle = document.getElementById("wallpaper");
+const wallpaperUrl = document.getElementById("wallpaperUrl");
+
+const DEFAULT_CUSTOM = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
 
 function setActive(mode) {
   for (const b of buttons) b.classList.toggle("active", b.dataset.mode === mode);
+  customColors.classList.toggle("visible", mode === "custom");
 }
 
 function render(lang) {
@@ -16,14 +25,26 @@ function render(lang) {
   for (const b of langButtons) b.classList.toggle("active", b.dataset.lang === lang);
 }
 
+function saveCustom() {
+  X2TStorage.set({
+    x2tCustom: { top: colorTop.value, bottom: colorBottom.value, accent: colorAccent.value }
+  });
+}
+
 X2TStorage.get(
-  ["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang"],
-  ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang }) => {
+  ["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
+    const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
+    colorTop.value = c.top;
+    colorBottom.value = c.bottom;
+    colorAccent.value = c.accent;
+    wallpaperToggle.checked = x2tWallpaperOn !== false;
+    wallpaperUrl.value = x2tWallpaperUrl || "";
   }
 );
 
@@ -33,6 +54,18 @@ for (const b of buttons) {
     setActive(b.dataset.mode);
   });
 }
+
+colorTop.addEventListener("input", saveCustom);
+colorBottom.addEventListener("input", saveCustom);
+colorAccent.addEventListener("input", saveCustom);
+
+wallpaperToggle.addEventListener("change", () => {
+  X2TStorage.set({ x2tWallpaperOn: wallpaperToggle.checked });
+});
+
+wallpaperUrl.addEventListener("change", () => {
+  X2TStorage.set({ x2tWallpaperUrl: wallpaperUrl.value.trim() });
+});
 
 filterToggle.addEventListener("change", () => {
   X2TStorage.set({ x2tFilter: filterToggle.checked });
