@@ -123,8 +123,14 @@
     }
   }
 
+  function isHomeTimeline() {
+    const p = location.pathname;
+    return p === "/" || p === "/home" || p.startsWith("/home/");
+  }
+
   function filterTimeline(root) {
     if (!filterOn) return;
+    if (!isHomeTimeline()) return;
     if (root && root.tagName === "ARTICLE") { hideTweet(root); return; }
     const articles = root && root.querySelectorAll
       ? root.querySelectorAll('article[data-testid="tweet"]')
