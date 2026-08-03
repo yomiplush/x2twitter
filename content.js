@@ -277,6 +277,11 @@
       [data-testid="primaryColumn"] > div,
       div[data-testid="cellInnerDiv"] { border-radius: 16px; }
 
+      form[role="search"],
+      [data-testid="SearchBox_Search_Input"] {
+        border-radius: 999px;
+      }
+
       a:focus-visible, button:focus-visible {
         outline: 3px solid rgba(29,161,242,.45) !important;
         outline-offset: 2px;
@@ -391,6 +396,11 @@
         background-attachment: fixed !important;
       }
       body { background: transparent !important; }
+      #react-root,
+      #react-root > div,
+      #layers {
+        background-color: transparent !important;
+      }
       body, body * {
         text-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.2) !important;
       }
