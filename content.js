@@ -11,9 +11,9 @@
   }
   function rebrandText(text) {
     return String(text)
+      .replace(/x\.com/gi, "twitter.com")
       .replace(/\u{1D54F}/gu, "Twitter 2")
-      .replace(/\bX\b/g, "Twitter 2")
-      .replace(/x\.com/gi, "twitter.com");
+      .replace(/\bX\b/g, "Twitter 2");
   }
   function fixLabel(el, attr) {
     const val = el.getAttribute(attr);
@@ -92,9 +92,9 @@
   const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス"];
   const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry"];
 
-  const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/;
-  const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`);
-  const NEGATIVE_WEAK = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`);
+  const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
+  const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
+  const NEGATIVE_WEAK = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "i");
 
   let filterOn = false;
   const hiddenTweets = new Set();
@@ -231,7 +231,10 @@
         return r;
       };
     });
-    window.addEventListener("popstate", scheduleFinish);
+    window.addEventListener("popstate", () => {
+      beginNav();
+      scheduleFinish();
+    });
     setInterval(fixFavicon, 5000);
   }
 
@@ -314,10 +317,11 @@
     if (!logo) return;
     const svg = logo.querySelector("svg");
     if (svg) fixOneSvg(svg);
-    if (svg && svg.querySelector('path[d*="M18.244"]')) {
-      svg.style.opacity = "0";
+    const replaced = svg && !svg.querySelector('path[d*="M18.244"]');
+    if (!replaced) {
+      if (svg) svg.style.opacity = "0";
+      overlayBird(logo);
     }
-    overlayBird(logo);
   }
 
 
@@ -371,9 +375,13 @@
     return currentMode === "auto" ? detectSiteTheme() : currentMode;
   }
 
+  let bgApplying = false;
   function applyBackground() {
-    const mode = resolveMode();
-    const light = `
+    if (bgApplying) return;
+    bgApplying = true;
+    try {
+      const mode = resolveMode();
+      const light = `
       html {
         background-color: #C0DEED !important;
         background-image:
@@ -420,11 +428,14 @@
       document.head.appendChild(style);
     }
     style.textContent = mode === "dark" ? dark : light;
-    document.documentElement.style.setProperty(
-      "--x2t-bird-color",
-      mode === "dark" ? "rgba(140,200,255,0.9)" : "rgba(29,161,242,0.85)"
-    );
+    const birdColor = mode === "dark" ? "rgba(140,200,255,0.9)" : "rgba(29,161,242,0.85)";
+    if (document.documentElement.style.getPropertyValue("--x2t-bird-color") !== birdColor) {
+      document.documentElement.style.setProperty("--x2t-bird-color", birdColor);
+    }
     if (transition && transition.styleOverlay) transition.styleOverlay();
+    } finally {
+      bgApplying = false;
+    }
   }
 
   function fixFavicon() {
@@ -555,6 +566,11 @@
 
   function fixSubtree(root) {
     if (root.nodeType === Node.TEXT_NODE) { fixTextNode(root); return; }
+    if (root.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+      walk(root);
+      fixLogos(root);
+      return;
+    }
     if (root.nodeType !== Node.ELEMENT_NODE) return;
     if (SKIP_TAGS.has(root.tagName)) return;
     if (root.tagName === "SVG") { fixLogos(root); return; }
@@ -571,21 +587,28 @@
     }, 200);
   }
 
+  function isOrContainsLogo(el) {
+    return (el.matches && el.matches('a[href="/"]')) ||
+           (el.querySelector && el.querySelector('a[href="/"]'));
+  }
+
+  function handleAdded(el) {
+    if (el.nodeType !== Node.ELEMENT_NODE) return;
+    if (isOrContainsLogo(el)) queueLogoFix();
+    if (transition && transition.navTimer &&
+        (el.tagName === "ARTICLE" ||
+         (el.querySelector && el.querySelector('article[data-testid="tweet"], [data-testid="primaryColumn"]')))) {
+      clearTimeout(transition.navTimer);
+      transition.navTimer = setTimeout(() => transition.finishNav(), 180);
+    }
+  }
+
   const observer = new MutationObserver(mutations => {
     for (const m of mutations) {
       for (const added of m.addedNodes) {
         fixSubtree(added);
         filterTimeline(added);
-        if (added.nodeType === Node.ELEMENT_NODE) {
-          if ((added.matches && added.matches('a[href="/"]')) ||
-              (added.querySelector && added.querySelector('a[href="/"]'))) queueLogoFix();
-          if (transition && transition.navTimer &&
-              (added.tagName === "ARTICLE" ||
-               (added.querySelector && added.querySelector('article[data-testid="tweet"], [data-testid="primaryColumn"]')))) {
-            clearTimeout(transition.navTimer);
-            transition.navTimer = setTimeout(() => transition.finishNav(), 180);
-          }
-        }
+        handleAdded(added);
       }
       if (m.type === "characterData") fixTextNode(m.target);
       if (m.type === "attributes") {
