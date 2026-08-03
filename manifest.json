@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "X to Twitter 2",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "x.comをTwitterに戻すやつ。タブアイコンとロゴを青い鳥に、Xって単語は全部「Twitter 2」に書き換える",
+  "default_locale": "en",
+  "description": "__MSG_extDesc__",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",

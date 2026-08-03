@@ -523,6 +523,14 @@
     document.body.appendChild(c);
   }
 
+  function i18n(key, fallback) {
+    try {
+      return chrome.i18n.getMessage(key) || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
   function showSplash() {
     if (window.top !== window) return;
     if (document.getElementById("x2t-splash")) return;
@@ -553,7 +561,7 @@
       <svg class="x2t-splash-bird" viewBox="0 0 24 24"><path fill="#fff" d="${BIRD_PATH}"/></svg>
       <div style="text-align:center">
         <div class="x2t-splash-title">Twitter 2</div>
-        <div class="x2t-splash-sub">優しいTwitterへ、ようこそ</div>
+        <div class="x2t-splash-sub">${i18n("splashSub", "優しいTwitterへ、ようこそ")}</div>
       </div>
     `;
     document.documentElement.appendChild(splash);
