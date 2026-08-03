@@ -84,14 +84,14 @@
 | 対象サイト | `*.x.com/*`, `*.twitter.com/*` |
 | 権限 | `storage` のみ（データ収集は一切なし） |
 | 必要ランタイム | 無し（依存ライブラリ不使用・ネイティブJSのみ） |
-| ファイル | `manifest.json` / `content.js` / `popup.html` / `popup.js` / `icons/` / `_locales/` |
+| ファイル | `manifest.json` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/` |
 
 ### 技術メモ
 - **テキスト置換**: `MutationObserver` でSPAの動的コンテンツにも追従。入力欄・textarea・contenteditableは置換しない（ツイート入力が壊れない）
 - **ロゴ置換**: XロゴのSVGパス（`M18.244...`）を検出して青い鳥に置換。置換不能時は絶対配置の鳥SVGを被せるフォールバック
 - **ページ遷移**: `primaryColumn` のopacity制御＋オーバーレイ＋`pushState`/`popstate`監視で疑似クロスフェードを実現
 - **背景**: htmlにグラデーション、bodyは透明化、鳥は `z-index:-1` の固定レイヤーで余白のみに表示
-- **多言語**: `_locales/` と `chrome.i18n` により、OSの言語設定（日本語/英語）にUIが自動追従
+- **UI文言**: ポップアップ内の「表示言語」で日本語（日本語）/Englishを手動切替（他言語は対象外。未設定時はOS言語に追従）
 
 ---
 
@@ -100,12 +100,10 @@
 ```
 x2twitter/
 ├── manifest.json      # 拡張定義（Manifest V3）
+├── i18n.js            # 表示文言（日本語/英語）と言語検出
 ├── content.js         # メイン処理（置換・演出・フィルター）
 ├── popup.html         # 拡張ポップアップUI
 ├── popup.js           # ポップアップ制御
-├── _locales/
-│   ├── ja/messages.json
-│   └── en/messages.json
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
@@ -127,7 +125,7 @@ cd x2twitter && zip -r ../x2twitter.zip . -x "*.DS_Store"
 ### カスタマイズ
 - フィルターワードは `content.js` 内の `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` 配列で編集できます
 - 背景色・スプラッシュ・遷移アニメは `content.js` 内のテンプレート文字列で調整可能です
-- UI文言は `_locales/ja/messages.json` / `_locales/en/messages.json` で編集できます
+- UI文言は `i18n.js` 内の `X2T_I18N` で編集できます（日本語 / English）
 
 ---
 

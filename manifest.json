@@ -1,9 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "__MSG_extName__",
+  "name": "X to Twitter 2",
   "version": "1.0.0",
-  "default_locale": "en",
-  "description": "__MSG_extDesc__",
+  "description": "x.comを優しいTwitterに戻すChrome拡張。青い鳥・Twitter 2表記・ネガティブニュースフィルター",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
@@ -21,7 +20,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.x.com/*", "*://*.twitter.com/*"],
-      "js": ["content.js"],
+      "js": ["i18n.js", "content.js"],
       "run_at": "document_idle",
       "all_frames": true
     }
