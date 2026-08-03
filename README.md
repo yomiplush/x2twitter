@@ -1,137 +1,142 @@
 # 🐦 X to Twitter 2
 
-> x.comを、昔懐かしい「優しいTwitter」に戻すChrome拡張アドオン。
-> タブアイコンとロゴを青い鳥に、Xって単語は全部「Twitter 2」に書き換え、起動スプラッシュ・背景演出・ネガティブニュースフィルターまで盛り込んだファン向け改造アドオンです。
+> A Chrome extension that brings back the nostalgic "gentle Twitter" to x.com.
+> Replaces the tab icon and logo with the blue bird, rewrites every "X" as "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter.
 
 ![version](https://img.shields.io/badge/version-1.0.0-blue)
 
 ---
 
-## ✨ 主な機能
+## ✨ Features
 
-### 1. ブランドを「Twitter」に復活
-- **タブアイコン / ファビコン** を本家Twitterの青い鳥（#1DA1F2）に
-- **左上のXロゴ** を青い鳥アイコンに置換（効かない場合は上から鳥を被せるフォールバック付き）
-- ページ内の **「X」「𝕏」という単語を全部「Twitter 2」** に書き換え
-- 「x.com」の表記は「twitter.com」に
-- タブのタイトルも「Twitter 2」に
+### 1. Bring the "Twitter" brand back
+- **Tab icon / favicon** restored to the official Twitter blue bird (#1DA1F2)
+- **Top-left X logo** replaced with the blue bird (falls back to overlaying a bird if the SVG can't be swapped)
+- Every **"X" / "𝕏"** on the page rewritten to **"Twitter 2"**
+- "x.com" text is rewritten to "twitter.com"
+- Browser tab title becomes "Twitter 2"
 
-### 2. 起動スプラッシュ
-- x.comを開くと、中央に青い鳥ロゴが脈動するスプラッシュが表示され、フェードアウトして通常画面へ
+### 2. Startup splash
+- Opening x.com shows a pulsing blue bird centered on a blue gradient, then fades out to the normal screen
 
-### 3. ページ遷移クロスフェード
-- リンク・左メニューをクリックすると、メインカラムがふわっと暗転 → 新コンテンツのマウントを検知して明転する、優しい疑似クロスフェード
+### 3. Crossfade page transitions
+- Clicking a link or a left-menu item softly dims the main column, then fades it back in once the new content mounts
 
-### 4. 優しいUI演出
-- ツイートカードのホバーで浮かび上がるような影
-- プロフィール画像ホバーで青グロー＋拡大
-- 角丸16pxのカード、smoothスクロール、青い選択色
+### 4. Gentle UI effects
+- Tweet cards lift with a soft shadow on hover
+- Profile images get a blue glow and slight zoom on hover
+- 16px rounded cards, smooth scrolling, blue selection color
 
-### 5. 背景モード（自動追従）
-- **自動**（デフォルト）: X側のテーマ（ライト/ダーク）に背景を自動追従
-- **ライト**: 旧Twitter風の水色グラデーション
-- **ダーク**: 旧Twitterダーク風の濃紺グラデーション
-- 余白には「まったり浮かぶ鳥」と「ゆっくり飛ぶ鳥」が環境演出として漂います
+### 5. Background modes (auto-follow)
+- **Auto** (default): matches the site's own light/dark theme
+- **Light**: old-Twitter style light blue gradient
+- **Dark**: old-Twitter dark navy gradient
+- Gentle "floating" and "flying" bird animations drift in the margins as ambient effects
 
-### 6. ネガティブニュースフィルター 🛡️
-- トグルONでタイムラインから以下を非表示にします
-  - **日本・世界の政治**（選挙・国会・首脳・各国政治用語など）
-  - **陰謀論**（ワクチン・デマ・Qアノンなど）
-  - **戦争・紛争**（ウクライナ・ガザ・ミサイルなど）
-  - **火災・事故・災害**
-  - **不幸なニュース**（事件・犯罪・訃報など）
-  - **いがみ合い・誹謗中傷**（対立・論争・炎上・ハラスメントなど）
-- **データドリブン判定**: 強シグナル（1ヒットで非表示）と弱シグナル（2ヒット以上で非表示）の2段階
-- **優しさの配慮**: 「無事・無傷・助かった」等は非表示にせず、SOS・悩みの投稿は意図的にフィルター対象外
-
----
-
-## 📦 インストール方法（Chrome拡張アドオン）
-
-1. **Zipをダウンロード** → リポジトリの **Releaseページ** から最新版の `x2twitter.zip` を取得
-2. Zipを解凍（例: `~/Downloads/x2twitter/`）
-3. Chromeで `chrome://extensions` を開く
-4. 右上の **「デベロッパー モード」** をON
-5. 左上の **「パッケージ化されていない拡張機能を読み込む」** をクリック
-6. 解凍した **`x2twitter` フォルダ** を選択
-7. 有効化されたら **x.com を開く** 🎉
-
-### アップデートするとき
-1. `chrome://extensions` で拡張の **再読み込み**（🔄 アイコン）をクリック
-2. 変更が反映されます
+### 6. Negative-news filter 🛡️
+- Toggle ON to hide from the timeline:
+  - **Politics — Japan and worldwide** (elections, parliament, heads of state, global political terms, etc.)
+  - **Conspiracy theories** (vaccines, misinformation, QAnon, etc.)
+  - **War & conflict** (Ukraine, Gaza, missiles, etc.)
+  - **Fires, accidents, disasters**
+  - **Unfortunate news** (crimes, arrests, obituaries, etc.)
+  - **Arguments & harassment** (confrontation, disputes, flame wars, harassment, etc.)
+- **Data-driven detection**: strong signals (hide on 1 hit) and weak signals (hide on 2+ hits)
+- **Kindness by design**: posts containing "no injuries / everyone is safe / rescued" are kept, and mental-health SOS posts are intentionally never filtered
 
 ---
 
-## 🎛️ 使い方
+## 📦 Installation (Chrome extension)
 
-### 背景モード切替
-拡張アイコン（🐦）をクリック → 「背景モード」で **自動 / ライト / ダーク** を選択
+1. **Download the zip** → grab the latest `x2twitter.zip` from the **Releases** page
+2. Extract it (e.g. into `~/Downloads/x2twitter/`)
+3. Open `chrome://extensions` in Chrome
+4. Turn on **Developer mode** (top-right)
+5. Click **Load unpacked** (top-left)
+6. Select the extracted **`x2twitter` folder**
+7. Once enabled, open **x.com** 🎉
 
-### ネガティブニュースフィルター
-拡張アイコン → 下のトグル「**ネガティブニュースを隠す**」をON/OFF
-- ON: 該当するツイートを即時非表示（スクロールで増える新着にも自動追従）
-- OFF: 元通り表示
-
-設定は自動保存され、次回の起動時にも維持されます。
+### Updating
+1. On `chrome://extensions`, click the **Reload** (🔄) button for the extension
+2. Changes take effect immediately
 
 ---
 
-## ⚙️ 仕様
+## 🎛️ Usage
 
-| 項目 | 内容 |
+### Background mode
+Click the extension icon (🐦) → choose **Auto / Light / Dark** under *Background mode*
+
+### Negative-news filter
+Click the extension icon → toggle **Hide negative news**
+- ON: matching tweets are hidden instantly (new tweets appearing on scroll are filtered automatically)
+- OFF: everything is shown again
+
+Settings are saved automatically and persist across sessions.
+
+---
+
+## ⚙️ Specifications
+
+| Item | Details |
 |---|---|
-| 形式 | Chrome Extension (Manifest V3) |
-| 対象サイト | `*.x.com/*`, `*.twitter.com/*` |
-| 権限 | `storage` のみ（データ収集は一切なし） |
-| 必要ランタイム | 無し（依存ライブラリ不使用・ネイティブJSのみ） |
-| ファイル | `manifest.json` / `content.js` / `popup.html` / `popup.js` / `icons/` |
+| Type | Chrome Extension (Manifest V3) |
+| Target sites | `*.x.com/*`, `*.twitter.com/*` |
+| Permissions | `storage` only (no data collection) |
+| Runtime | None (no dependencies, pure vanilla JS) |
+| Files | `manifest.json` / `content.js` / `popup.html` / `popup.js` / `icons/` / `_locales/` |
 
-### 技術メモ
-- **テキスト置換**: `MutationObserver` でSPAの動的コンテンツにも追従。入力欄・textarea・contenteditableは置換しない（ツイート入力が壊れない）
-- **ロゴ置換**: XロゴのSVGパス（`M18.244...`）を検出して青い鳥に置換。置換不能時は絶対配置の鳥SVGを被せるフォールバック
-- **ページ遷移**: `primaryColumn` のopacity制御＋オーバーレイ＋`pushState`/`popstate`監視で疑似クロスフェードを実現
-- **背景**: htmlにグラデーション、bodyは透明化、鳥は `z-index:-1` の固定レイヤーで余白のみに表示
+### Technical notes
+- **Text rewriting**: uses a `MutationObserver` to follow SPA dynamic content. Input fields, `textarea`s and `contenteditable` areas are never rewritten (your tweets stay intact)
+- **Logo swap**: detects the X logo SVG path (`M18.244...`) and replaces it with the blue bird; falls back to overlaying an absolutely-positioned bird if the swap is impossible
+- **Page transitions**: pseudo-crossfade via `primaryColumn` opacity control + overlay + `pushState`/`popstate` monitoring
+- **Background**: gradient on `html`, transparent `body`, and animated birds on a fixed `z-index:-1` layer so they only show in the margins
+- **i18n**: language auto-switches to match the OS locale (Japanese / English fallback)
 
 ---
 
-## 📁 リポジトリ構成
+## 📁 Repository layout
 
 ```
 x2twitter/
-├── manifest.json      # 拡張定義（Manifest V3）
-├── content.js         # メイン処理（置換・演出・フィルター）
-├── popup.html         # 拡張ポップアップUI
-├── popup.js           # ポップアップ制御
+├── manifest.json      # Extension manifest (Manifest V3)
+├── content.js         # Main logic (rewriting, effects, filter)
+├── popup.html         # Extension popup UI
+├── popup.js           # Popup controls
+├── _locales/
+│   ├── ja/messages.json
+│   └── en/messages.json
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
 │   ├── icon128.png
-│   └── bird.svg       # 青い鳥の元SVG
+│   └── bird.svg       # Original blue-bird SVG
 └── README.md
 ```
 
 ---
 
-## 🧑‍💻 開発者向け
+## 🧑‍💻 For developers
 
 ```bash
-# 手動テスト: chrome://extensions で「パッケージ化されていない拡張機能を読み込む」
-# zip作成例
+# Manual testing: chrome://extensions → "Load unpacked"
+# Build the zip
 cd x2twitter && zip -r ../x2twitter.zip . -x "*.DS_Store"
 ```
 
-### カスタマイズ
-- フィルターワードは `content.js` 内の `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` 配列で編集できます
-- 背景色・スプラッシュ・遷移アニメは `content.js` 内のテンプレート文字列で調整可能です
+### Customization
+- Filter keywords live in the `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` arrays in `content.js`
+- Background colors, splash and transition animations are template strings in `content.js`
+- UI strings live in `_locales/ja/messages.json` and `_locales/en/messages.json`
 
 ---
 
-## ⚠️ 注意事項
+## ⚠️ Disclaimer
 
-- 本拡張は**非公式のファン改造アドオン**であり、X（旧Twitter）社とは一切関係ありません
-- ページ構造の変更により、動作が崩れる可能性があります
-- 「X」の文字を「Twitter 2」に置換するため、意図しない文言の変更が起こることがあります
-- 商用利用・再配布の際は自己責任でお願いします
+- This is an **unofficial fan-made extension** and is not affiliated with X (formerly Twitter)
+- Page-structure changes by X may break parts of the extension
+- Because "X" is rewritten to "Twitter 2", some unintended text changes may occur
+- Use and redistribution are at your own risk
 
 ---
 
@@ -141,4 +146,4 @@ MIT
 
 ---
 
-*「小さいお子さんが、大人がいがみ合ってる姿なんて見たくないよ」という想いから、Xを優しいTwitterに戻すプロジェクトです。*
+*Built from a wish: "Kids shouldn't have to watch adults tear each other apart." This project brings the gentle Twitter back to X.*
