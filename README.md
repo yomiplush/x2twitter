@@ -113,7 +113,7 @@ Firefox 109+ 対応版が `firefox/` にあります（`compat.js` で `chrome`/
 | 対象サイト | `*.x.com/*`, `*.twitter.com/*` |
 | 権限 | `storage` のみ（データ収集は一切なし） |
 | 必要ランタイム | 無し（依存ライブラリ不使用・ネイティブJSのみ） |
-| ファイル | `manifest.json` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/`（Firefox版は `firefox/`） |
+| ファイル | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/`（Firefox版は `firefox/`） |
 
 ### 技術メモ
 - **テキスト置換**: `MutationObserver` でSPAの動的コンテンツにも追従。入力欄・textarea・contenteditableは置換しない（ツイート入力が壊れない）
@@ -129,8 +129,9 @@ Firefox 109+ 対応版が `firefox/` にあります（`compat.js` で `chrome`/
 ```
 x2twitter/
 ├── manifest.json      # 拡張定義（Manifest V3）
+├── filters.js         # フィルターワード定義（強/弱シグナル・例外・正規表現）
 ├── i18n.js            # 表示文言（日本語/英語）と言語検出
-├── content.js         # メイン処理（置換・演出・フィルター）
+├── content.js         # メイン処理（置換・演出・フィルター適用）
 ├── popup.html         # 拡張ポップアップUI
 ├── popup.js           # ポップアップ制御
 ├── firefox/           # Firefox版（compat.js + gecko manifest）
@@ -153,7 +154,7 @@ cd x2twitter && zip -r ../x2twitter.zip . -x "*.DS_Store"
 ```
 
 ### カスタマイズ
-- フィルターワードは `content.js` 内の `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` 配列で編集できます
+- フィルターワードは `filters.js` 内の `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` 配列で編集できます（誤爆しやすい曖昧な英単語：conflict・fight・strike・fire・shelter・fake・flu・vaccineなどは弱シグナル設定）
 - 背景色・スプラッシュ・遷移アニメは `content.js` 内のテンプレート文字列で調整可能です
 - UI文言は `i18n.js` 内の `X2T_I18N` で編集できます（日本語 / English）
 
