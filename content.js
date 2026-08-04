@@ -67,7 +67,19 @@
     "アフガニスタン", "イラク", "シリア", "イエメン", "スーダン", "リビア", "ソマリア",
     "ミャンマー", "レバノン", "ベネズエラ", "ベラルーシ", "アルメニア", "アゼルバイジャン",
     "カシミール", "エチオピア", "コンゴ", "ハイチ", "台湾", "南シナ海",
-    "NAFO", "ナフォ", "フェラ軍"
+    "NAFO", "ナフォ", "フェラ軍",
+    "ワシントン", "ジェファーソン", "リンカーン", "ルーズベルト", "ケネディ", "ニクソン",
+    "レーガン", "クリントン", "オバマ", "トランプ", "バイデン", "ブッシュ", "ジョンソン",
+    "トルーマン", "アイゼンハワー", "アダムズ", "マディソン", "モンロー", "ジャクソン",
+    "バンビューレン", "ハリソン", "テイラー", "フィルモア", "ピアース", "ブキャナン",
+    "グラント", "ヘイズ", "ガーフィールド", "アーサー", "クリーブランド", "マッキンリー",
+    "タフト", "ウィルソン", "ハーディング", "クーリッジ", "フーヴァー", "フォード", "カーター",
+    "スターリン", "レーニン", "毛沢東", "ヒトラー", "チャーチル", "サッチャー", "ゴルバチョフ",
+    "エリツィン", "ムバラク", "カダフィ", "サダム", "ビンラディン", "チャベス", "カストロ",
+    "マドゥロ", "ルーラ", "ボルソナロ", "トルドー", "スターマー", "スナク", "ショルツ",
+    "メルケル", "メローニ", "ムッソリーニ", "フランコ", "サンチェス", "サルコジ", "シラク",
+    "ドゴール", "ルカシェンコ", "アサド", "金日成", "金正日", "蒋介石", "マンデラ", "ガンジー",
+    "ナポレオン", "カエサル"
   ];
   const STRONG_EN = [
     "politics", "political", "politician", "election", "president", "presidential",
@@ -167,10 +179,18 @@
     "afghanistan", "iraq", "syria", "yemen", "sudan", "libya", "somalia", "myanmar",
     "lebanon", "venezuela", "belarus", "armenia", "azerbaijan", "kashmir",
     "ethiopia", "congo", "haiti", "taiwan", "south china sea",
-    "nafo", "north atlantic fellas", "fella army"
+    "nafo", "north atlantic fellas", "fella army",
+    "washington", "jefferson", "lincoln", "roosevelt", "kennedy", "nixon", "reagan",
+    "clinton", "obama", "bush", "stalin", "lenin", "mao zedong", "mao", "hitler",
+    "churchill", "thatcher", "gorbachev", "yeltsin", "mubarak", "gaddafi", "saddam",
+    "saddam hussein", "bin laden", "osama bin laden", "chavez", "castro", "maduro",
+    "lula", "bolsonaro", "trudeau", "boris johnson", "starmer", "sunak", "scholz",
+    "merkel", "meloni", "mussolini", "franco", "sanchez", "sarkozy", "chirac",
+    "de gaulle", "lukashenko", "assad", "kim il sung", "kim jong il", "chiang kai shek",
+    "mandela", "gandhi", "napoleon", "caesar"
   ];
   const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく"];
-  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled"];
+  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled", "adams", "madison", "monroe", "jackson", "van buren", "harrison", "taylor", "fillmore", "pierce", "buchanan", "grant", "hayes", "garfield", "arthur", "cleveland", "mckinley", "taft", "wilson", "harding", "coolidge", "hoover", "ford", "carter", "truman", "eisenhower", "johnson"];
   const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|日本は|日本人|この国は|この国では|japanese people|japanese are|japanese society|japanese government|in japan|japan is|this country)", "gi");
 
   const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
