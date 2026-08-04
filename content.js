@@ -60,7 +60,10 @@
     "AI戦争", "AI兵器", "AI犯罪", "AIに仕事を奪われる", "AIで失業", "AI大量失業", "人工知能の暴走",
     "シンギュラリティ", "ロボットに支配", "ディープフェイク", "なりすまし動画", "偽動画", "偽音声",
     "扇動", "煽動", "焚きつけ", "焚き付け", "危機を煽る", "不安を煽る", "恐怖を煽る", "パニックを煽る",
-    "過激化", "過激派", "デマ拡散", "情報戦", "洗脳", "洗脳される", "誤情報", "虚偽情報", "偽情報"
+    "過激化", "過激派", "デマ拡散", "情報戦", "洗脳", "洗脳される", "誤情報", "虚偽情報", "偽情報",
+    "激怒", "怒り心頭", "怒り狂う", "殺意", "殺意を抱く", "憎悪", "憎しみ", "嫌悪感", "吐き気がする",
+    "ブチ切れ", "ブチギレ", "キレた", "切れた", "頭に来る", "頭にきた", "許せない", "許すまじ",
+    "復讐", "復讐を誓う", "恨み", "敵意", "軽蔑", "侮蔑", "見下し", "見下す", "マウント", "マウンティング"
   ];
   const STRONG_EN = [
     "politics", "political", "politician", "election", "president", "presidential",
@@ -99,10 +102,13 @@
     "singularity", "killer robots", "autonomous weapons", "AI weapons", "deepfake", "deepfakes",
     "AI replacing jobs", "AI job losses", "AI layoffs", "AI ban", "ban AI", "AI regulation",
     "incite", "incites", "inciting", "incitement", "fearmongering", "scaremongering", "hysteria",
-    "misinformation", "disinformation", "brainwashing", "smear campaign", "hate campaign", "mob mentality"
+    "misinformation", "disinformation", "brainwashing", "smear campaign", "hate campaign", "mob mentality",
+    "rage", "furious", "fury", "enraged", "livid", "seething", "murderous", "despise", "despised",
+    "contempt", "loathing", "loathe", "disgusting", "revolting", "repulsive", "vile", "revenge",
+    "vendetta", "grudge", "animosity", "condescending", "patronizing", "smug"
   ];
-  const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ"];
-  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm"];
+  const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく"];
+  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless"];
 
   const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
   const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
