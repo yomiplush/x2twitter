@@ -39,11 +39,18 @@
     return hits;
   }
 
+  // 表示を許可する（フィルター対象外にする）か判定
+  // 1. 基本のホワイトリスト（動物・無事など） 2. 災害・救難情報モード 3. 食べ物・グルメモード
+  function isWhitelisted(t) {
+    if (NEGATIVE_EXCEPT.test(t)) return true;
+    if (currentDisaster && DISASTER_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return true;
+    if (currentFood && FOOD_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return true;
+    return false;
+  }
+
   function matchesNegative(el) {
     const t = el.textContent || "";
-    if (NEGATIVE_EXCEPT.test(t)) return false;
-    if (currentDisaster && DISASTER_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return false;
-    if (currentFood && FOOD_ALLOW.test(t)) return false;
+    if (isWhitelisted(t)) return false;
     if (NEGATIVE_STRONG.test(t)) return true;
     return countWeakHits(t) >= 2;
   }
@@ -79,6 +86,11 @@
     filterOn = on;
     if (on) filterTimeline(document);
     else restoreTimeline();
+  }
+
+  function refilter() {
+    restoreTimeline();
+    if (filterOn) filterTimeline(document);
   }
 
   // ===== 全体スタイル注入 =====
@@ -577,20 +589,18 @@
     if (changes.x2tBirds) {
       currentBirds = !!changes.x2tBirds.newValue;
       if (currentBirds) injectAmbientBirds();
+      else {
+        const el = document.getElementById("x2t-birds");
+        if (el) el.remove();
+      }
     }
     if (changes.x2tDisaster) {
       currentDisaster = !!changes.x2tDisaster.newValue;
-      if (currentDisaster) {
-        for (const el of hiddenTweets) el.style.display = "";
-        hiddenTweets.clear();
-        filterTimeline(document);
-      }
+      refilter();
     }
     if (changes.x2tFood) {
       currentFood = !!changes.x2tFood.newValue;
-      for (const el of hiddenTweets) el.style.display = "";
-      hiddenTweets.clear();
-      filterTimeline(document);
+      refilter();
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;
