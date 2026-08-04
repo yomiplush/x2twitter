@@ -289,40 +289,67 @@
   }
 
   // ===== ロゴ・ファビコン =====
+  function isBrandLogo(a) {
+    if (!a || !a.getAttribute) return false;
+    const tid = a.getAttribute("data-testid") || "";
+    if (tid.startsWith("AppTabBar")) return false;
+    return (a.querySelector && a.querySelector("svg")) || /X|𝕏|Twitter/.test(a.getAttribute("aria-label") || "");
+  }
+
   function findLogo() {
-    const candidates = document.querySelectorAll('a[href="/"]');
-    for (const a of candidates) {
-      const tid = a.getAttribute("data-testid") || "";
-      if (tid.startsWith("AppTabBar")) continue;
-      if (a.querySelector("svg") || /X|𝕏|Twitter/.test(a.getAttribute("aria-label") || "")) {
-        return a;
-      }
+    for (const a of document.querySelectorAll('a[href="/"]')) {
+      if (isBrandLogo(a)) return a;
     }
     return null;
   }
 
-  function overlayBird(container) {
-    if (!container || container.querySelector(".x2t-bird-overlay")) return;
-    if (getComputedStyle(container).position === "static") container.style.position = "relative";
-    const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    s.setAttribute("class", "x2t-bird-overlay");
-    s.setAttribute("viewBox", "0 0 24 24");
-    s.style.cssText = "position:absolute;inset:0;margin:auto;width:58%;height:58%;pointer-events:none;z-index:6;overflow:visible;";
-    s.innerHTML = `<path fill="#1DA1F2" d="${BIRD_PATH}"/>`;
-    container.appendChild(s);
-    container.style.color = "transparent";
+  let logoBirdEl = null;
+  function getLogoBird() {
+    if (!logoBirdEl) {
+      logoBirdEl = document.createElement("div");
+      logoBirdEl.setAttribute("aria-hidden", "true");
+      logoBirdEl.style.cssText = "position:fixed;z-index:2147483000;pointer-events:none;display:flex;align-items:center;justify-content:center;";
+      logoBirdEl.innerHTML = `<svg viewBox="0 0 24 24" style="width:58%;height:58%;display:block;filter:drop-shadow(0 2px 6px rgba(29,161,242,.35));"><path fill="var(--x2t-bird-color, #1DA1F2)" d="${BIRD_PATH}"/></svg>`;
+      document.body.appendChild(logoBirdEl);
+    }
+    return logoBirdEl;
+  }
+
+  function paintLogoBird(logo) {
+    const b = getLogoBird();
+    if (!logo) { b.style.display = "none"; return; }
+    const r = logo.getBoundingClientRect();
+    if (!r || (r.width === 0 && r.height === 0)) { b.style.display = "none"; return; }
+    b.style.display = "flex";
+    b.style.left = r.left + "px";
+    b.style.top = r.top + "px";
+    b.style.width = r.width + "px";
+    b.style.height = r.height + "px";
+  }
+
+  let birdListenersWired = false;
+  function wireBirdListeners() {
+    if (birdListenersWired) return;
+    birdListenersWired = true;
+    window.addEventListener("scroll", () => paintLogoBird(findLogo()), { passive: true });
+    window.addEventListener("resize", () => paintLogoBird(findLogo()));
   }
 
   function ensureLogoBird() {
-    const logo = findLogo();
-    if (!logo) return;
-    const svg = logo.querySelector("svg");
-    if (svg) fixOneSvg(svg);
-    const replaced = svg && !svg.querySelector('path[d*="M18.244"]');
-    if (!replaced) {
-      if (svg) svg.style.opacity = "0";
-      overlayBird(logo);
+    let visible = null;
+    let first = null;
+    for (const a of document.querySelectorAll('a[href="/"]')) {
+      if (!isBrandLogo(a)) continue;
+      if (!first) first = a;
+      const svg = a.querySelector("svg");
+      if (svg) fixOneSvg(svg);
+      if (!visible) {
+        const r = a.getBoundingClientRect();
+        if (r && r.width > 0 && r.height > 0) visible = a;
+      }
     }
+    paintLogoBird(visible || first);
+    wireBirdListeners();
   }
 
 
@@ -511,17 +538,10 @@
 
   function fixOneSvg(svg) {
     if (!svg.querySelector) return;
-    const logo = svg.querySelector('path[d*="M18.244"]');
-    if (!logo) return;
-    const width = svg.getAttribute("width");
-    const height = svg.getAttribute("height");
-    svg.innerHTML = `<path fill="#1DA1F2" style="fill:#1DA1F2" d="${BIRD_PATH}"/>`;
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.style.fill = "#1DA1F2";
+    if (!svg.querySelector('path[d*="M18.244"]')) return;
+    svg.style.setProperty("visibility", "hidden", "important");
     svg.setAttribute("role", "img");
     svg.setAttribute("aria-label", "Twitter");
-    if (width) svg.setAttribute("width", width);
-    if (height) svg.setAttribute("height", height);
   }
 
   function fixLogos(root) {
