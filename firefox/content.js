@@ -109,6 +109,7 @@
   ];
   const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく"];
   const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless"];
+  const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|日本は|日本人|この国は|この国では|japanese people|japanese are|in japan|japan is)", "gi");
 
   const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
   const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
@@ -118,10 +119,16 @@
   const hiddenTweets = new Set();
 
   // ===== フィルター =====
+  // 弱シグナルは2ヒットで非表示。ただし「日本を主語にした批判」は、
+  // 批判ワードが1つでもあれば「日本を主語にした」ことを2ヒット目として扱う
   function countWeakHits(text) {
     NEGATIVE_WEAK_G.lastIndex = 0;
     let hits = 0;
     while (hits < 2 && NEGATIVE_WEAK_G.exec(text)) hits++;
+    if (hits >= 1) {
+      JAPAN_SUBJECT_G.lastIndex = 0;
+      if (JAPAN_SUBJECT_G.test(text)) hits = 2;
+    }
     return hits;
   }
 
