@@ -59,7 +59,12 @@ const STRONG_JP = [
   "マドゥロ", "ルーラ", "ボルソナロ", "トルドー", "スターマー", "スナク", "ショルツ",
   "メルケル", "メローニ", "ムッソリーニ", "フランコ", "サンチェス", "サルコジ", "シラク",
   "ドゴール", "ルカシェンコ", "アサド", "金日成", "金正日", "蒋介石", "マンデラ", "ガンジー",
-  "ナポレオン", "カエサル"
+  "ナポレオン", "カエサル",
+  "為替", "為替介入", "為替相場", "円相場", "円高", "日米", "日露", "日韓",
+  "米国", "米軍", "米政府", "米大統領", "米中",
+  "露軍", "露政府", "露大統領", "仏軍", "仏政府", "仏大統領",
+  "英軍", "英政府", "英首相", "独軍", "独政府", "独首相",
+  "中国政府", "中国軍"
 ];
 const STRONG_EN = [
   "politics", "political", "politician", "election", "president", "presidential",
@@ -168,10 +173,12 @@ const STRONG_EN = [
   "lula", "bolsonaro", "trudeau", "boris johnson", "starmer", "sunak", "scholz",
   "merkel", "meloni", "mussolini", "franco", "sanchez", "sarkozy", "chirac",
   "de gaulle", "lukashenko", "assad", "kim il sung", "kim jong il", "chiang kai shek",
-  "mandela", "gandhi", "napoleon", "caesar"
+  "mandela", "gandhi", "napoleon", "caesar",
+  "exchange rate", "foreign exchange", "fx", "us-china", "us-japan", "japan-us",
+  "us military", "us government", "us president"
 ];
-const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく", "ワクチン"];
-const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled", "adams", "madison", "monroe", "jackson", "van buren", "harrison", "taylor", "fillmore", "pierce", "buchanan", "grant", "hayes", "garfield", "arthur", "cleveland", "mckinley", "taft", "wilson", "harding", "coolidge", "hoover", "ford", "carter", "truman", "eisenhower", "johnson", "conflict", "conflicts", "fight", "fights", "fighting", "strike", "strikes", "fire", "fires", "shelter", "fake", "flu", "vaccine", "vaccines", "vaccination"];
+const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく", "ワクチン", "露", "仏", "韓国"];
+const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled", "adams", "madison", "monroe", "jackson", "van buren", "harrison", "taylor", "fillmore", "pierce", "buchanan", "grant", "hayes", "garfield", "arthur", "cleveland", "mckinley", "taft", "wilson", "harding", "coolidge", "hoover", "ford", "carter", "truman", "eisenhower", "johnson", "conflict", "conflicts", "fight", "fights", "fighting", "strike", "strikes", "fire", "fires", "shelter", "fake", "flu", "vaccine", "vaccines", "vaccination", "yen", "south korea"];
 const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|日本は|日本人|この国は|この国では|japanese people|japanese are|japanese society|japanese government|in japan|japan is|this country)", "gi");
 
 const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
