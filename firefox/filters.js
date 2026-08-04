@@ -190,3 +190,9 @@ const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|�
 const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった|動物|動物園|動物保護|動物好き|ペット|保護犬|保護猫|野良猫|野良犬|子犬|子猫|わんこ|にゃんこ|ワンちゃん|猫ちゃん|犬ちゃん|いぬ|ねこ|うさぎ|ウサギ|ハムスター|金魚|インコ|オウム|パンダ|水族館|アニマル|里親|譲渡会|猫カフェ|ねこカフェ|保護動物|保護活動|犬|猫|鳥|小鳥|カワウソ|フェレット|モルモット|リス|ハリネズミ|カメ|動物の写真|pet|pets|animal|animals|dog|dogs|cat|cats|kitten|kittens|puppy|puppies|bunny|rabbit|hamster|bird|birds|parrot|wildlife|aquarium|panda|foster)/i;
 const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
 const NEGATIVE_WEAK_G = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "gi");
+
+// ===== 災害・救難支援情報モード =====
+// 「災害・救難支援情報を見る」ON時に表示を許可する災害・救助・支援系キーワード
+const DISASTER_ALLOW = /(?:地震|余震|震度|震源地|マグニチュード|津波|避難|避難所|避難指示|警報|注意報|特別警報|大雨|洪水|土砂災害|被災地|被災|被害|救助|救助隊|救出|救難|救難支援|安否|安否確認|支援|支援物資|支援金|義援金|被災者支援|募金|ボランティア|ボランティア募集|停電|断水|復旧|復興|災害|熊本|避難場所|避難所開設|受け入れ|連絡先|相談窓口|拡散|拡散希望|共有|シェア|助けて|緊急|お知らせ|情報求む|地震速報|消防|自衛隊|ヘリコプター|earthquake|quake|aftershock|tsunami|evacuation|evacuate|shelter|warning|alert|epicenter|magnitude|flood|landslide|rescue|rescue team|first responders|relief|aid|donation|donate|supplies|volunteer|blackout|outage|recovery|disaster|emergency|urgent|help|share|damage|safety|helpline|hotline)/i;
+// 感情をえぐるグラフィック表現（災害情報モードでも非表示を維持）
+const DISASTER_EMOTIONAL_BLOCK = /(?:死亡|死者|亡くなり|亡くなった|遺体|犠牲|重体|心肺停止|焼死|圧死|生き埋め|押し流さ|崩れ落ち|死体|遺族|訃報|血|絶望|death|deaths|dead|killed|killing|body|bodies|casualties|fatality|fatalities|trapped|buried|crushed|blood|remains|died|murder)/i;

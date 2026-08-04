@@ -1,6 +1,7 @@
 const buttons = document.querySelectorAll("#seg button");
 const langButtons = document.querySelectorAll("#langSeg button");
 const filterToggle = document.getElementById("filter");
+const disasterToggle = document.getElementById("disaster");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -32,11 +33,12 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tDisaster, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
+    disasterToggle.checked = !!x2tDisaster;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
     const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
@@ -80,6 +82,10 @@ wallpaperUrl.addEventListener("change", () => {
 
 filterToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tFilter: filterToggle.checked });
+});
+
+disasterToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ x2tDisaster: disasterToggle.checked });
 });
 
 splashToggle.addEventListener("change", () => {

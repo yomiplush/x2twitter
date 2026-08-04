@@ -42,6 +42,7 @@
   function matchesNegative(el) {
     const t = el.textContent || "";
     if (NEGATIVE_EXCEPT.test(t)) return false;
+    if (currentDisaster && DISASTER_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return false;
     if (NEGATIVE_STRONG.test(t)) return true;
     return countWeakHits(t) >= 2;
   }
@@ -239,6 +240,7 @@
   let currentLang = x2tDetectLang();
   let currentSplash = true;
   let currentBirds = true;
+  let currentDisaster = false;
   let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
   let wallpaperOn = false;
   let wallpaperUrl = "";
@@ -545,11 +547,12 @@
 
   fixAll();
   setInterval(fixFavicon, 5000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
     currentBirds = x2tBirds !== false;
+    currentDisaster = !!x2tDisaster;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
@@ -571,6 +574,14 @@
     if (changes.x2tBirds) {
       currentBirds = !!changes.x2tBirds.newValue;
       if (currentBirds) injectAmbientBirds();
+    }
+    if (changes.x2tDisaster) {
+      currentDisaster = !!changes.x2tDisaster.newValue;
+      if (currentDisaster) {
+        for (const el of hiddenTweets) el.style.display = "";
+        hiddenTweets.clear();
+        filterTimeline(document);
+      }
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;
