@@ -24,6 +24,30 @@
 
   let filterOn = false;
   const hiddenTweets = new Set();
+  let myHandle = null;
+
+  // 現在ログイン中の自分のハンドルを取得（プロフィールタブのhrefから）
+  function getMyHandle() {
+    const profile = document.querySelector('[data-testid="AppTabBar_Profile_Link"]');
+    if (profile) {
+      const m = (profile.getAttribute("href") || "").match(/^\/([A-Za-z0-9_]{1,15})$/);
+      if (m) return m[1].toLowerCase();
+    }
+    const btn = document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"]');
+    if (btn) {
+      const m = (btn.textContent || "").match(/@([A-Za-z0-9_]{1,15})/);
+      if (m) return m[1].toLowerCase();
+    }
+    return null;
+  }
+
+  // ツイートが自分の投稿かどうか（作者リンクを確認）
+  function isOwnTweet(art) {
+    if (!myHandle) return false;
+    const target = "/" + myHandle;
+    const name = art.querySelector('[data-testid="User-Name"]');
+    return !!(name && name.querySelector('a[href="' + target + '"]'));
+  }
 
   // ===== フィルター =====
   // 弱シグナルは2ヒットで非表示。ただし「日本を主語にした批判」は、
@@ -56,7 +80,7 @@
   }
 
   function hideTweet(art) {
-    if (art.style.display !== "none" && matchesNegative(art)) {
+    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art)) {
       hiddenTweets.add(art);
       art.style.display = "none";
     }
@@ -503,6 +527,7 @@
     walk(document.body);
     fixLogos(document);
     ensureLogoBird();
+    myHandle = getMyHandle();
   }
 
   function fixSubtree(root) {
@@ -560,7 +585,7 @@
   });
 
   fixAll();
-  setInterval(fixFavicon, 5000);
+  setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
   chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
