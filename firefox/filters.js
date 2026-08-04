@@ -64,7 +64,10 @@ const STRONG_JP = [
   "米国", "米軍", "米政府", "米大統領", "米中",
   "露軍", "露政府", "露大統領", "仏軍", "仏政府", "仏大統領",
   "英軍", "英政府", "英首相", "独軍", "独政府", "独首相",
-  "中国政府", "中国軍"
+  "中国政府", "中国軍",
+  "不正アクセス", "個人情報流出", "個人情報漏洩", "情報漏洩", "情報漏えい", "データ流出", "データ漏えい", "なりすまし",
+  "殺人事件", "無差別殺傷", "通り魔", "猟奇殺人",
+  "ひき逃げ", "はねられた", "飲酒運転", "酒気帯び", "あおり運転", "逆走", "無免許運転", "暴走行為"
 ];
 const STRONG_EN = [
   "politics", "political", "politician", "election", "president", "presidential",
@@ -175,12 +178,15 @@ const STRONG_EN = [
   "de gaulle", "lukashenko", "assad", "kim il sung", "kim jong il", "chiang kai shek",
   "mandela", "gandhi", "napoleon", "caesar",
   "exchange rate", "foreign exchange", "fx", "us-china", "us-japan", "japan-us",
-  "us military", "us government", "us president"
+  "us military", "us government", "us president",
+  "unauthorized access", "data breach", "data leak", "data leaks", "identity theft",
+  "hit and run", "drunk driving", "drunk driver", "reckless driving", "road rage",
+  "mass stabbing", "random attack", "mass killing"
 ];
 const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく", "ワクチン", "露", "仏", "韓国"];
 const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled", "adams", "madison", "monroe", "jackson", "van buren", "harrison", "taylor", "fillmore", "pierce", "buchanan", "grant", "hayes", "garfield", "arthur", "cleveland", "mckinley", "taft", "wilson", "harding", "coolidge", "hoover", "ford", "carter", "truman", "eisenhower", "johnson", "conflict", "conflicts", "fight", "fights", "fighting", "strike", "strikes", "fire", "fires", "shelter", "fake", "flu", "vaccine", "vaccines", "vaccination", "yen", "south korea"];
 const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|日本は|日本人|この国は|この国では|japanese people|japanese are|japanese society|japanese government|in japan|japan is|this country)", "gi");
 
-const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
+const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった|動物|動物園|動物保護|動物好き|ペット|保護犬|保護猫|野良猫|野良犬|子犬|子猫|わんこ|にゃんこ|ワンちゃん|猫ちゃん|犬ちゃん|いぬ|ねこ|うさぎ|ウサギ|ハムスター|金魚|インコ|オウム|パンダ|水族館|アニマル|里親|譲渡会|猫カフェ|ねこカフェ|保護動物|保護活動|犬|猫|鳥|小鳥|カワウソ|フェレット|モルモット|リス|ハリネズミ|カメ|動物の写真|pet|pets|animal|animals|dog|dogs|cat|cats|kitten|kittens|puppy|puppies|bunny|rabbit|hamster|bird|birds|parrot|wildlife|aquarium|panda|foster)/i;
 const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
 const NEGATIVE_WEAK_G = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "gi");
