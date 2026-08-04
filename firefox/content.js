@@ -55,7 +55,12 @@
     "洪水", "土砂災害", "地滑り", "噴火", "火山噴火", "竜巻", "大雪", "熱波", "寒波",
     "停電", "断水", "コロナ", "感染者", "感染拡大", "避難指示", "避難所",
     "倒産", "解雇", "リストラ", "不況", "不景気", "物価高", "円安",
-    "食中毒", "熱中症", "猛暑", "鳥インフル", "インフル"
+    "食中毒", "熱中症", "猛暑", "鳥インフル", "インフル",
+    "反AI", "AI規制", "AI禁止", "AI反対", "AI崩壊", "AI消滅", "AI支配", "AIの暴走", "AI暴走",
+    "AI戦争", "AI兵器", "AI犯罪", "AIに仕事を奪われる", "AIで失業", "AI大量失業", "人工知能の暴走",
+    "シンギュラリティ", "ロボットに支配", "ディープフェイク", "なりすまし動画", "偽動画", "偽音声",
+    "扇動", "煽動", "焚きつけ", "焚き付け", "危機を煽る", "不安を煽る", "恐怖を煽る", "パニックを煽る",
+    "過激化", "過激派", "デマ拡散", "情報戦", "洗脳", "洗脳される", "誤情報", "虚偽情報", "偽情報"
   ];
   const STRONG_EN = [
     "politics", "political", "politician", "election", "president", "presidential",
@@ -89,10 +94,15 @@
     "argument", "arguments", "arguing", "quarrel", "feud", "feuding", "hostility",
     "hostile", "toxic", "trolling", "trolls", "harassment", "cyberbullying", "bullying",
     "insult", "insults", "mocking", "ridicule", "hatred", "hate speech", "bigotry",
-    "racism", "xenophobia", "misogyny", "homophobia", "discrimination"
+    "racism", "xenophobia", "misogyny", "homophobia", "discrimination",
+    "artificial intelligence", "AI takeover", "AI apocalypse", "AI doom", "robot uprising",
+    "singularity", "killer robots", "autonomous weapons", "AI weapons", "deepfake", "deepfakes",
+    "AI replacing jobs", "AI job losses", "AI layoffs", "AI ban", "ban AI", "AI regulation",
+    "incite", "incites", "inciting", "incitement", "fearmongering", "scaremongering", "hysteria",
+    "misinformation", "disinformation", "brainwashing", "smear campaign", "hate campaign", "mob mentality"
   ];
-  const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス"];
-  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry"];
+  const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ"];
+  const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm"];
 
   const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募金|チャリティ|寄付|復興支援|被災地支援|バリアフリー|無事|無傷|全員無事|けがなし|軽傷のみ|助かった)/i;
   const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
