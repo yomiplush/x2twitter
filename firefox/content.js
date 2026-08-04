@@ -238,8 +238,6 @@
     const style = document.createElement("style");
     style.id = "x2t-ui";
     style.textContent = `
-      html { scroll-behavior: smooth; }
-
       article[data-testid="tweet"] {
         transition: box-shadow .3s ease, transform .3s ease;
       }
@@ -720,6 +718,35 @@
       applyBackground();
     }
   });
+
+  // ===== Homeで先頭へ自動スクロール =====
+  function scrollTop() {
+    const sc = document.scrollingElement || document.documentElement;
+    sc.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      if (sc.scrollTop > 0) sc.scrollTop = 0;
+    }, 500);
+  }
+
+  document.addEventListener("click", e => {
+    if (e.button !== 0) return;
+    const a = e.target && e.target.closest
+      ? e.target.closest('a[href="/"], a[href="/home"], [data-testid="AppTabBar_Home_Link"]')
+      : null;
+    if (!a) return;
+    if (isHomeTimeline()) scrollTop();
+    else setTimeout(scrollTop, 150);
+  }, true);
+
+  ["pushState", "replaceState"].forEach(m => {
+    const orig = history[m];
+    history[m] = function (...args) {
+      const r = orig.apply(this, args);
+      if (isHomeTimeline()) setTimeout(scrollTop, 200);
+      return r;
+    };
+  });
+
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
