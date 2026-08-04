@@ -43,6 +43,7 @@
     const t = el.textContent || "";
     if (NEGATIVE_EXCEPT.test(t)) return false;
     if (currentDisaster && DISASTER_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return false;
+    if (currentFood && FOOD_ALLOW.test(t)) return false;
     if (NEGATIVE_STRONG.test(t)) return true;
     return countWeakHits(t) >= 2;
   }
@@ -241,6 +242,7 @@
   let currentSplash = true;
   let currentBirds = true;
   let currentDisaster = false;
+  let currentFood = false;
   let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
   let wallpaperOn = false;
   let wallpaperUrl = "";
@@ -547,12 +549,13 @@
 
   fixAll();
   setInterval(fixFavicon, 5000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
     currentBirds = x2tBirds !== false;
     currentDisaster = !!x2tDisaster;
+    currentFood = !!x2tFood;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
@@ -582,6 +585,12 @@
         hiddenTweets.clear();
         filterTimeline(document);
       }
+    }
+    if (changes.x2tFood) {
+      currentFood = !!changes.x2tFood.newValue;
+      for (const el of hiddenTweets) el.style.display = "";
+      hiddenTweets.clear();
+      filterTimeline(document);
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;

@@ -196,3 +196,7 @@ const NEGATIVE_WEAK_G = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN
 const DISASTER_ALLOW = /(?:地震|余震|震度|震源地|マグニチュード|津波|避難|避難所|避難指示|警報|注意報|特別警報|大雨|洪水|土砂災害|被災地|被災|被害|救助|救助隊|救出|救難|救難支援|安否|安否確認|支援|支援物資|支援金|義援金|被災者支援|募金|ボランティア|ボランティア募集|停電|断水|復旧|復興|災害|熊本|避難場所|避難所開設|受け入れ|連絡先|相談窓口|拡散|拡散希望|共有|シェア|助けて|緊急|お知らせ|情報求む|地震速報|消防|自衛隊|ヘリコプター|earthquake|quake|aftershock|tsunami|evacuation|evacuate|shelter|warning|alert|epicenter|magnitude|flood|landslide|rescue|rescue team|first responders|relief|aid|donation|donate|supplies|volunteer|blackout|outage|recovery|disaster|emergency|urgent|help|share|damage|safety|helpline|hotline)/i;
 // 感情をえぐるグラフィック表現（災害情報モードでも非表示を維持）
 const DISASTER_EMOTIONAL_BLOCK = /(?:死亡|死者|亡くなり|亡くなった|遺体|犠牲|重体|心肺停止|焼死|圧死|生き埋め|押し流さ|崩れ落ち|死体|遺族|訃報|血|絶望|death|deaths|dead|killed|killing|body|bodies|casualties|fatality|fatalities|trapped|buried|crushed|blood|remains|died|murder)/i;
+
+// ===== 食べ物・グルメモード =====
+// 「食べ物・グルメを見る」ON時に表示を許可する食べ物・食事系キーワード
+const FOOD_ALLOW = /(?:ご飯|ごはん|朝ごはん|昼ごはん|夜ごはん|朝食|昼食|夕食|食事|食べ物|食べもの|グルメ|料理|お料理|レシピ|クッキング|ラーメン|そば|うどん|寿司|すし|カレー|ピザ|ハンバーガー|ハンバーグ|パン|ケーキ|スイーツ|お菓子|デザート|アイス|飲み物|ドリンク|コーヒー|ジュース|カフェ|喫茶店|レストラン|居酒屋|焼肉|お好み焼き|たこ焼き|弁当|お弁当|パスタ|サラダ|スープ|味噌汁|おでん|鍋|定食|丼|天ぷら|刺身|焼き魚|焼き鳥|ステーキ|フルーツ|果物|野菜|卵|豆腐|チーズ|ヨーグルト|おいしい|美味しい|うまい|食べたい|お腹すいた|お腹がすいた|腹ペコ|空腹|満腹|もぐもぐ|ぱくぱく|food|meal|meals|delicious|yummy|tasty|cooking|recipe|recipes|restaurant|breakfast|lunch|dinner|snack|snacks|pizza|ramen|sushi|curry|cake|dessert|coffee|hungry|starving)/i;
