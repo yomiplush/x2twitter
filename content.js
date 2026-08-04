@@ -66,7 +66,8 @@
     "復讐", "復讐を誓う", "恨み", "敵意", "軽蔑", "侮蔑", "見下し", "見下す", "マウント", "マウンティング",
     "アフガニスタン", "イラク", "シリア", "イエメン", "スーダン", "リビア", "ソマリア",
     "ミャンマー", "レバノン", "ベネズエラ", "ベラルーシ", "アルメニア", "アゼルバイジャン",
-    "カシミール", "エチオピア", "コンゴ", "ハイチ", "台湾", "南シナ海"
+    "カシミール", "エチオピア", "コンゴ", "ハイチ", "台湾", "南シナ海",
+    "NAFO", "ナフォ", "フェラ軍"
   ];
   const STRONG_EN = [
     "politics", "political", "politician", "election", "president", "presidential",
@@ -165,7 +166,8 @@
     "looking down", "snapped", "lost it",
     "afghanistan", "iraq", "syria", "yemen", "sudan", "libya", "somalia", "myanmar",
     "lebanon", "venezuela", "belarus", "armenia", "azerbaijan", "kashmir",
-    "ethiopia", "congo", "haiti", "taiwan", "south china sea"
+    "ethiopia", "congo", "haiti", "taiwan", "south china sea",
+    "nafo", "north atlantic fellas", "fella army"
   ];
   const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく"];
   const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled"];

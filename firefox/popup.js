@@ -59,6 +59,17 @@ colorTop.addEventListener("input", saveCustom);
 colorBottom.addEventListener("input", saveCustom);
 colorAccent.addEventListener("input", saveCustom);
 
+document.querySelectorAll(".preset").forEach((p) => {
+  const c = JSON.parse(p.dataset.p);
+  p.style.background = `linear-gradient(135deg, ${c.top}, ${c.bottom})`;
+  p.addEventListener("click", () => {
+    colorTop.value = c.top;
+    colorBottom.value = c.bottom;
+    colorAccent.value = c.accent;
+    saveCustom();
+  });
+});
+
 wallpaperToggle.addEventListener("change", () => {
   X2TStorage.set({ x2tWallpaperOn: wallpaperToggle.checked });
 });

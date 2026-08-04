@@ -120,6 +120,17 @@
     outline: none;
   }
   .url-row input[type="text"]:focus { border-color: var(--accent); }
+  .preset-row { display: flex; gap: 8px; margin-top: 10px; }
+  .preset {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .preset:hover { transform: scale(1.1); border-color: var(--accent); }
   .divider { height: 1px; background: var(--border); margin: 2px 0 12px; }
   .row {
     display: flex;
@@ -195,6 +206,13 @@
         <span data-i18n="colorAccent"></span>
         <input type="color" id="colorAccent" value="#1DA1F2">
       </div>
+      <div class="preset-row">
+        <button class="preset" title="空色" data-p='{"top":"#C0DEED","bottom":"#8EC5E8","accent":"#1DA1F2"}'></button>
+        <button class="preset" title="夜空" data-p='{"top":"#15202B","bottom":"#1B2A3A","accent":"#8EC5E8"}'></button>
+        <button class="preset" title="桜" data-p='{"top":"#FADDE1","bottom":"#F2B8C6","accent":"#E75480"}'></button>
+        <button class="preset" title="ミント" data-p='{"top":"#DCF7F0","bottom":"#A7E8D4","accent":"#00B386"}'></button>
+        <button class="preset" title="柑橘" data-p='{"top":"#FFF1D6","bottom":"#FFD699","accent":"#F59E0B"}'></button>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="label" data-i18n="wallpaperLabel"></div>
@@ -227,7 +245,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.2.6</span>
+    <span class="ver">v1.3.0</span>
   </div>
   <script src="i18n.js"></script>
   <script src="popup.js"></script>
