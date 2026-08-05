@@ -49,6 +49,29 @@
     return !!(name && name.querySelector('a[href="' + target + '"]'));
   }
 
+  // ツイートの作者ハンドルを取得（@ なし・小文字）
+  function getTweetHandle(art) {
+    const name = art.querySelector('[data-testid="User-Name"]');
+    if (!name) return null;
+    const a = name.querySelector('a[href^="/"]');
+    if (!a) return null;
+    const m = (a.getAttribute("href") || "").match(/^\/([A-Za-z0-9_]{1,15})$/);
+    return m ? m[1].toLowerCase() : null;
+  }
+
+  // ツイートの作者表示名を取得
+  function getTweetDisplayName(art) {
+    const name = art.querySelector('[data-testid="User-Name"]');
+    return name ? (name.textContent || "") : "";
+  }
+
+  // 日本のメディア・新聞社アカウントはネガティブフィルターの対象外（常に表示）
+  function isJapaneseMedia(art) {
+    const handle = getTweetHandle(art);
+    if (handle && JP_MEDIA_HANDLES.has(handle)) return true;
+    return JP_MEDIA_NAME.test(getTweetDisplayName(art));
+  }
+
   // ===== フィルター =====
   // 弱シグナルは2ヒットで非表示。ただし「日本を主語にした批判」は、
   // 批判ワードが1つでもあれば「日本を主語にした」ことを2ヒット目として扱う
@@ -80,7 +103,7 @@
   }
 
   function hideTweet(art) {
-    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art)) {
+    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art) && !isJapaneseMedia(art)) {
       hiddenTweets.add(art);
       art.style.display = "none";
     }
@@ -586,7 +609,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -600,7 +623,7 @@
     applyBackground();
     setFilter(!!x2tFilter);
   });
-  X2TStorage.onChanged.addListener((changes, area) => {
+  chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local") return;
     if (changes.x2tMode) {
       currentMode = changes.x2tMode.newValue || "auto";

@@ -197,6 +197,27 @@ const NEGATIVE_EXCEPT = /(?:火災保険|火災報知器|事故物件|防災|募
 const NEGATIVE_STRONG = new RegExp(`(?:${STRONG_JP.join("|")})|(?:${STRONG_EN.map(EN).join("|")})`, "i");
 const NEGATIVE_WEAK_G = new RegExp(`(?:${WEAK_JP.join("|")})|(?:${WEAK_EN.map(EN).join("|")})`, "gi");
 
+// ===== 日本のメディア・新聞社アカウント（ネガティブフィルターの対象外・常に表示）=====
+// ハンドル（@ なし・小文字）で判定。追加したければここに追記する
+const JP_MEDIA_HANDLES = new Set([
+  // 全国紙・経済紙
+  "asahi", "asahicom", "yomiuri", "yomiuri_online", "mainichi", "mainichishimbun",
+  "nikkei", "nikkei_plus", "nikkei_news", "sankei", "sankei_news", "sankei_express",
+  // 通信社
+  "kyodo_jp", "kyodonewsjp", "jijicom", "jiji_press", "jiji_koho",
+  // NHK
+  "nhk_news", "nhk_seikatsu", "nhk_kabun", "nhk_politics", "nhk_sports",
+  // 地方紙・ブロック紙
+  "tokyoshimbun", "chunichi_web", "doshinweb", "nishinippon", "chugoku_shim",
+  "kobeshinbun", "kyoto_np", "kahokushinpo", "shinmai_web", "kumanichi",
+  "minaminihon_web", "okinawatimes", "ryukyushimpo", "tokushima_np",
+  // テレビ局のニュースアカウント
+  "tbs_news", "fnn_news", "nnn_news", "tvtokyo_news", "tv_asahi_news",
+  "fujinewsjapan", "nhk_news", "news_tbs", "mbs_news", "cbc_news"
+]);
+// 表示名（ディスプレイネーム）による補助判定（例: 「◯◯新聞」「◯◯新聞社」）
+const JP_MEDIA_NAME = /(?:新聞|新聞社|通信社|放送局|テレビ|NHK|毎日|朝日|読売|日経|産経|共同通信|時事通信|中日|東京新聞|北海道新聞|西日本新聞|中国新聞|神戸新聞|京都新聞|河北新報|信濃毎日|熊本日日|南日本新聞|沖縄タイムス|琉球新報)/;
+
 // ===== 災害・救難支援情報モード =====
 // 「災害・救難支援情報を見る」ON時に表示を許可する災害・救助・支援系キーワード
 const DISASTER_ALLOW = /(?:地震|余震|震度|震源地|マグニチュード|津波|避難|避難所|避難指示|警報|注意報|特別警報|大雨|洪水|土砂災害|被災地|被災|被害|救助|救助隊|救出|救難|救難支援|安否|安否確認|支援|支援物資|支援金|義援金|被災者支援|募金|ボランティア|ボランティア募集|停電|断水|復旧|復興|災害|熊本|避難場所|避難所開設|受け入れ|連絡先|相談窓口|拡散|拡散希望|共有|シェア|助けて|緊急|お知らせ|情報求む|地震速報|消防|自衛隊|ヘリコプター|earthquake|quake|aftershock|tsunami|evacuation|evacuate|shelter|warning|alert|epicenter|magnitude|flood|landslide|rescue|rescue team|first responders|relief|aid|donation|donate|supplies|volunteer|blackout|outage|recovery|disaster|emergency|urgent|help|share|damage|safety|helpline|hotline)/i;

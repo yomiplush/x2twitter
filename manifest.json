@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X to Twitter 2",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "x.comを優しいTwitterに戻すChrome拡張。青い鳥・Twitter 2表記・ネガティブニュースフィルター",
   "permissions": ["storage"],
   "action": {
