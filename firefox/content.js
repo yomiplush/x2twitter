@@ -65,11 +65,21 @@
     return name ? (name.textContent || "") : "";
   }
 
-  // 日本のメディア・新聞社アカウントはネガティブフィルターの対象外（常に表示）
+  // 日本のメディア・新聞社アカウントかどうか
   function isJapaneseMedia(art) {
     const handle = getTweetHandle(art);
     if (handle && JP_MEDIA_HANDLES.has(handle)) return true;
     return JP_MEDIA_NAME.test(getTweetDisplayName(art));
+  }
+
+  // メディアはネガティブフィルターの対象外だが、
+  // 被害状況（死者・遺体・重体など感情に強い衝撃を与える表現）は非表示を維持。
+  // 災害支援（避難所・救助・支援物資など）は常に表示する。
+  function isJapaneseMediaExempt(art) {
+    if (!isJapaneseMedia(art)) return false;
+    const t = art.textContent || "";
+    if (DISASTER_EMOTIONAL_BLOCK.test(t)) return false;
+    return true;
   }
 
   // ===== フィルター =====
@@ -103,7 +113,7 @@
   }
 
   function hideTweet(art) {
-    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art) && !isJapaneseMedia(art)) {
+    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art) && !isJapaneseMediaExempt(art)) {
       hiddenTweets.add(art);
       art.style.display = "none";
     }
