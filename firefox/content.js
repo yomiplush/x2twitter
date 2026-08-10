@@ -356,9 +356,12 @@
   }
 
   function fixTitle() {
-    if (document.title && hasX(document.title)) {
-      document.title = rebrandText(document.title);
+    let title = document.title || "";
+    if (currentBusy) {
+      title = title.replace(/^\s*\([\d.,]+\)\s*/, "");
     }
+    if (title && hasX(title)) title = rebrandText(title);
+    if (title !== document.title) document.title = title;
   }
 
   let currentMode = "auto";
@@ -544,6 +547,7 @@
       if (busyStyle) busyStyle.remove();
       busyStyle = null;
     }
+    fixTitle();
   }
 
   function fixFavicon() {
@@ -708,7 +712,10 @@
         filterTimeline(added);
         handleAdded(added);
       }
-      if (m.type === "characterData") fixTextNode(m.target);
+      if (m.type === "characterData") {
+        if (m.target.parentElement && m.target.parentElement.tagName === "TITLE") fixTitle();
+        else fixTextNode(m.target);
+      }
       if (m.type === "attributes") {
         if (m.target === document.documentElement) {
           fixTitle();
@@ -723,7 +730,7 @@
   });
 
   fixAll();
-  setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
+  setInterval(() => { fixFavicon(); fixTitle(); myHandle = getMyHandle(); }, 3000);
   X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
