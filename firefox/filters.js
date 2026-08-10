@@ -301,3 +301,23 @@ const FIN_ACCOUNTS = new Set([
 // ===== アートモード（スペシャル）=====
 // 「アート中心モード」ON時に表示を許可するアート・創作系キーワード
 const ART_ALLOW = /(?:絵|イラスト|イラストレーション|イラストレーター|アート|アーティスト|作品|描いた|描き|描いて|描き方|お絵かき|スケッチ|ドローイング|デッサン|漫画|マンガ|ファンアート|デジタルアート|水彩|水彩画|油絵|アクリル画|彫刻|芸術|芸術家|画家|画廊|ギャラリー|展示|展示会|個展|絵画|アニメ|アニメーション|ドット絵|落書き|ラフ画|線画|原画|塗り絵|美術|美術館|創作者|創作|絵を描く|art|artist|artists|illustration|illustrations|illustrator|drawing|drawings|drew|sketch|sketches|painting|paintings|painted|digital art|fanart|fan art|artwork|artworks|gallery|manga|anime|sculpture|watercolor|acrylic|canvas|portrait|abstract|concept art|doodle|sketchbook|paint|artistic|creativity|creative|masterpiece)/i;
+
+// ===== 暴言・誹謗フィルター =====
+// 「暴言を隠す」ON時に非表示にする暴言・誹謗ワード
+const INSULT_JP = [
+  "死ね", "氏ね", "しね", "死んどけ", "死にやがれ", "くたばれ", "消えろ", "消え失せろ",
+  "失せろ", "出て行け", "出てけ", "カス", "カス野郎", "クズ", "くず", "クズ野郎",
+  "ゴミ野郎", "ゴミクズ", "ゴミカス", "くそ野郎", "クソ野郎", "クソ", "くそ", "バカ", "バカ野郎",
+  "馬鹿", "馬鹿野郎", "アホ", "あほ", "阿呆", "ボケ", "ボケ野郎", "たわけ", "無能",
+  "ド素人", "ハゲ", "禿げ", "デブ", "ブス", "チビ", "キモい", "キモイ", "気色悪い",
+  "うざい", "ウザい", "うぜえ", "パクリ", "パクり", "パクった", "盗作", "盗用", "丸パクリ",
+  "無断転載", "AIかよ", "AIだろ", "AIでしょ", "AIやん", "AIのくせに"
+];
+const INSULT_EN = [
+  "die", "kys", "kill yourself", "go die", "fuck", "fucking", "fuck you",
+  "asshole", "bitch", "idiot", "moron", "dumbass", "stupid", "dumb", "trash",
+  "piece of shit", "loser", "pathetic", "ugly", "bald", "scum", "worthless",
+  "you suck", "shut up", "retard", "whore", "bastard", "jerk", "screw you",
+  "eat shit", "fool", "dipshit", "shithead", "jackass"
+];
+const INSULT_STRONG = new RegExp(`(?:${INSULT_JP.join("|")})|(?:${INSULT_EN.map(EN).join("|")})`, "i");

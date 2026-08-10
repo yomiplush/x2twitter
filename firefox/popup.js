@@ -9,6 +9,7 @@ const hideGovToggle = document.getElementById("hideGov");
 const hideNewsToggle = document.getElementById("hideNews");
 const hideTrendsToggle = document.getElementById("hideTrends");
 const hideFinToggle = document.getElementById("hideFin");
+const hideInsultToggle = document.getElementById("hideInsult");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -40,8 +41,8 @@ function saveCustom() {
 }
 
 X2TStorage.get(
-  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
@@ -53,6 +54,7 @@ X2TStorage.get(
     hideNewsToggle.checked = !!x2tHideNews;
     hideTrendsToggle.checked = !!x2tHideTrends;
     hideFinToggle.checked = !!x2tHideFin;
+    hideInsultToggle.checked = !!x2tHideInsult;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
     const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
@@ -128,6 +130,10 @@ hideTrendsToggle.addEventListener("change", () => {
 
 hideFinToggle.addEventListener("change", () => {
   X2TStorage.set({ x2tHideFin: hideFinToggle.checked });
+});
+
+hideInsultToggle.addEventListener("change", () => {
+  X2TStorage.set({ x2tHideInsult: hideInsultToggle.checked });
 });
 
 splashToggle.addEventListener("change", () => {

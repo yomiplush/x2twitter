@@ -28,6 +28,7 @@
   let currentHideGov = false;
   let currentHideNews = false;
   let currentHideFin = false;
+  let currentHideInsult = false;
 
   // 現在ログイン中の自分のハンドルを取得（プロフィールタブのhrefから）
   function getMyHandle() {
@@ -157,6 +158,7 @@
       if (currentHideNews && NEWS_ACCOUNTS.has(author)) return true;
       if (currentHideFin && FIN_ACCOUNTS.has(author)) return true;
     }
+    if (currentHideInsult && INSULT_STRONG.test(art.textContent || "")) return true;
     if (currentArt) {
       const t = art.textContent || "";
       if (isWhitelisted(t)) return false;
@@ -180,7 +182,7 @@
   }
 
   function filterTimeline(root) {
-    if (!filterOn && !currentHideGov && !currentHideNews && !currentHideFin && !currentArt) return;
+    if (!filterOn && !currentHideGov && !currentHideNews && !currentHideFin && !currentHideInsult && !currentArt) return;
     if (!isHomeTimeline()) return;
     if (root && root.tagName === "ARTICLE") { hideTweet(root); return; }
     const articles = root && root.querySelectorAll
@@ -731,7 +733,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); fixTitle(); myHandle = getMyHandle(); }, 3000);
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
+  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -744,6 +746,7 @@
     currentHideNews = !!x2tHideNews;
     currentHideTrends = !!x2tHideTrends;
     currentHideFin = !!x2tHideFin;
+    currentHideInsult = !!x2tHideInsult;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
@@ -794,6 +797,10 @@
     }
     if (changes.x2tHideFin) {
       currentHideFin = !!changes.x2tHideFin.newValue;
+      refilter();
+    }
+    if (changes.x2tHideInsult) {
+      currentHideInsult = !!changes.x2tHideInsult.newValue;
       refilter();
     }
     if (changes.x2tArt) {

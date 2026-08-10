@@ -133,6 +133,7 @@ Click the extension icon → turn on **Show food & meals** to keep seeing food p
 - **Hide news accounts**: completely hide news & newspaper accounts worldwide (@nhk_news, @CNN, @Reuters, etc.)
 - **Hide trends**: hide the right-side trends panel ("Trending now" / "トレンド")
 - **Hide finance accounts**: completely hide finance/economy media, central banks, and crypto media (@WSJ, @Bloomberg, @nikkei, @Cointelegraph, etc.)
+- **Hide abuse & insults**: hide replies/posts containing insults (死ね "die", カス "scum", ゴミ野郎 "trash", ハゲ "baldy", パクリ "plagiarism", "AIかよ", fuck, idiot, piece of shit, etc.) — works in Japanese & English
 - Your own account's posts are always exempt. The account lists live in `filters.js` under `GOV_ACCOUNTS` / `NEWS_ACCOUNTS` / `FIN_ACCOUNTS`
 
 All settings are saved automatically and persist across sessions.
