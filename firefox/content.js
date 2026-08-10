@@ -324,6 +324,7 @@
   let currentBirds = true;
   let currentDisaster = false;
   let currentFood = false;
+  let currentHideTrends = false;
   let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
   let wallpaperOn = false;
   let wallpaperUrl = "";
@@ -455,6 +456,28 @@
     }
   }
 
+  // ===== トレンド非表示 =====
+  let trendsStyle = null;
+  function applyTrendsHide() {
+    if (currentHideTrends) {
+      if (!trendsStyle) {
+        trendsStyle = document.createElement("style");
+        trendsStyle.id = "x2t-trends";
+        document.head.appendChild(trendsStyle);
+      }
+      trendsStyle.textContent = `
+        [data-testid="sidebarColumn"] [aria-label^="Timeline: Trending"],
+        [data-testid="sidebarColumn"] [aria-label*="Trending now"],
+        [data-testid="sidebarColumn"] [aria-label*="トレンド"] {
+          display: none !important;
+        }
+      `;
+    } else {
+      if (trendsStyle) trendsStyle.remove();
+      trendsStyle = null;
+    }
+  }
+
   function fixFavicon() {
     let link = document.querySelector('link[rel~="icon"]');
     if (!link) {
@@ -573,6 +596,7 @@
     fixLogos(document);
     ensureLogoBird();
     myHandle = getMyHandle();
+    applyTrendsHide();
   }
 
   function fixSubtree(root) {
@@ -631,7 +655,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews }) => {
+  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -640,11 +664,13 @@
     currentFood = !!x2tFood;
     currentHideGov = !!x2tHideGov;
     currentHideNews = !!x2tHideNews;
+    currentHideTrends = !!x2tHideTrends;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
     showSplash();
     applyBackground();
+    applyTrendsHide();
     setFilter(!!x2tFilter);
   });
   X2TStorage.onChanged.addListener((changes, area) => {
@@ -681,6 +707,10 @@
     if (changes.x2tHideNews) {
       currentHideNews = !!changes.x2tHideNews.newValue;
       refilter();
+    }
+    if (changes.x2tHideTrends) {
+      currentHideTrends = !!changes.x2tHideTrends.newValue;
+      applyTrendsHide();
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;

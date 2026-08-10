@@ -5,6 +5,7 @@ const disasterToggle = document.getElementById("disaster");
 const foodToggle = document.getElementById("food");
 const hideGovToggle = document.getElementById("hideGov");
 const hideNewsToggle = document.getElementById("hideNews");
+const hideTrendsToggle = document.getElementById("hideTrends");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -36,8 +37,8 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
@@ -45,6 +46,7 @@ chrome.storage.local.get(
     foodToggle.checked = !!x2tFood;
     hideGovToggle.checked = !!x2tHideGov;
     hideNewsToggle.checked = !!x2tHideNews;
+    hideTrendsToggle.checked = !!x2tHideTrends;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
     const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
@@ -104,6 +106,10 @@ hideGovToggle.addEventListener("change", () => {
 
 hideNewsToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tHideNews: hideNewsToggle.checked });
+});
+
+hideTrendsToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ x2tHideTrends: hideTrendsToggle.checked });
 });
 
 splashToggle.addEventListener("change", () => {
