@@ -1,206 +1,206 @@
 # 🐦 X to Twitter 2
 
-> x.comを、昔懐かしい「優しいTwitter」に戻すChrome拡張アドオン。
-> タブアイコンとロゴを青い鳥に、Xって単語は全部「Twitter 2」に書き換え、起動スプラッシュ・背景演出・ネガティブニュースフィルターまで盛り込んだファン向け改造アドオンです。
+> A Chrome extension that brings x.com back to the nostalgic "gentle Twitter".
+> It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter. A fan-made mod.
 
-![version](https://img.shields.io/badge/version-1.0.0-blue)
-
----
-
-## ✨ 主な機能
-
-### 1. ブランドを「Twitter」に復活
-- **タブアイコン / ファビコン** を本家Twitterの青い鳥（#1DA1F2）に
-- **左上のXロゴ** を青い鳥アイコンに置換（効かない場合は上から鳥を被せるフォールバック付き）
-- ページ内の **「X」「𝕏」という単語を全部「Twitter 2」** に書き換え
-- 「x.com」の表記は「twitter.com」に
-- タブのタイトルも「Twitter 2」に
-
-### 2. 起動スプラッシュ
-- x.comを開くと、中央に青い鳥ロゴが脈動するスプラッシュが表示され、しばらくして通常画面へ（ON/OFF可）
-
-### 3. カスタムカラー＆壁紙 🎨
-- **カスタムカラー**: 背景モードの「カスタム」で、背景の上/下の色と鳥の色（アクセント）を自由に設定できます。プリセット配色（空色/夜空/桜/ミント/柑橘）をワンタップで適用可能
-- **壁紙画像**: 任意の画像URLを背景壁紙に設定（表示ON/OFF可）。Midnight Lizard風の自分好みテーマに
-
-### 4. 優しいUI演出
-- ツイートカードのホバーで浮かび上がるような影
-- プロフィール画像ホバーで青グロー＋拡大
-- 角丸16pxのカード、青い選択色
-- **Homeを押すと自動でタイムライン先頭へスクロール**（スムーズ）
-
-### 5. 背景モード（自動追従）
-- **自動**（デフォルト）: X側のテーマ（ライト/ダーク）に背景を自動追従
-- **ライト**: 旧Twitter風の水色グラデーション
-- **ダーク**: 旧Twitterダーク風の濃紺グラデーション
-- **カスタム**: 背景の色（上/下）と鳥の色を自由にカスタマイズ
-- 余白には「まったり浮かぶ鳥」と「ゆっくり飛ぶ鳥」が環境演出として漂います（ON/OFF可）
-
-### 6. ネガティブニュースフィルター 🛡️
-- トグルONで**ホームのタイムライン**（`/home`）から以下を非表示にします（検索結果ページには適用されません）
-  - **日本・世界の政治**（選挙・国会・首脳・各国政治用語など）
-  - **陰謀論**（ワクチン・デマ・Qアノンなど）
-  - **戦争・紛争**（ウクライナ・ガザ・ミサイルなど）
-  - **紛争地域の国名**（アフガニスタン・イラク・シリア・イエメン・スーダン・ミャンマー・台湾・南シナ海など）
-  - **NAFO関連**（NAFO・ナフォ・フェラ軍など）
-  - **全世界の歴代大統領・首脳・偉人**（米大統領・ヒトラー/スターリン/毛沢東・ビンラディン・プーチンなど。ありふれた苗字は誤爆防止のため2ヒット判定）
-  - **ニュース略語・為替**（為替/為替介入/円高・日米/日露/日韓・露軍/仏政府/英首相・米軍/中国政府など。単漢字「露」「仏」「韓国」は誤爆防止のため2ヒット判定）
-  - **火災・事故・災害**
-  - **不幸なニュース**（事件・犯罪・訃報など）
-  - **いがみ合い・誹謗中傷**（対立・論争・炎上・ハラスメントなど）
-  - **ネガティブ感情反応**（激怒・殺意・憎悪・嫌悪感・見下し・マウント、ムカつく/イライラなどの苛立ち）
-  - **日本を主語にした批判**（「日本では」「日本人が」「この国は」などで始まる批判。批判ワードとの組み合わせで判定）
-  - **AI騒動・扇動**（反AI・AI支配/崩壊・ディープフェイク・扇動/煽動・不安を煽る・デマ拡散・洗脳・誤情報など。SOS・拡散希望などの助け合い投稿は対象外）
-  - **AI論争**（AI絵・AIイラスト・生成AI・AIパクリ/盗作/盗用・無断学習・AIの是非・AIをめぐる議論・AI反対派/賛成派など）
-- **データドリブン判定**: 強シグナル（1ヒットで非表示）と弱シグナル（2ヒット以上で非表示）の2段階
-- **ほぼ全ての嫌なニュースをカバー**: 殺人・事件・犯罪・事故・災害・政治・戦争・紛争・サイバー攻撃（不正アクセス・情報流出）・テロ・為替・国際問題まで網羅
-- **動物の記事は許可**: 猫・犬・動物園・ペット・保護活動・水族館など動物に関する投稿はフィルター対象外（癒しを守る）
-- **日本のメディア・新聞社は許可**: 朝日・読売・毎日・日経・産経・共同通信・時事通信・NHK・地方紙・テレビ局などのメディアアカウントの投稿はフィルター対象外（新聞社系の公式ニュースは常に表示）。ただし災害の被害状況（死者・遺体・重体など感情に強い衝撃を与える表現）はメディアの投稿でも非表示を維持
-- **多言語対応**: 日本語の全フィルターワードを英語に翻訳済み。日本語・英語の両方で検出できます
-- **優しさの配慮**: 「無事・無傷・助かった」等は非表示にせず、SOS・悩みの投稿は意図的にフィルター対象外
+![version](https://img.shields.io/badge/version-1.6.5-blue)
 
 ---
 
-## 📦 インストール方法（Chrome拡張アドオン）
+## ✨ Key Features
 
-1. **Zipをダウンロード** → リポジトリの **Releaseページ** から最新版の `x2twitter.zip` を取得
-2. Zipを解凍（例: `~/Downloads/x2twitter/`）
-3. Chromeで `chrome://extensions` を開く
-4. 右上の **「デベロッパー モード」** をON
-5. 左上の **「パッケージ化されていない拡張機能を読み込む」** をクリック
-6. 解凍した **`x2twitter` フォルダ** を選択
-7. 有効化されたら **x.com を開く** 🎉
+### 1. Bring the "Twitter" brand back
+- **Tab icon / favicon** → the original Twitter blue bird (#1DA1F2)
+- **Top-left X logo** → replaced with a blue bird (falls back to an overlaid bird if the logo can't be swapped)
+- Every **"X" / "𝕏"** on the page → rewritten to **"Twitter 2"**
+- **"x.com"** → written as **"twitter.com"**
+- The browser tab title → also rewritten to **"Twitter 2"**
 
-### アップデートするとき
-1. `chrome://extensions` で拡張の **再読み込み**（🔄 アイコン）をクリック
-2. 変更が反映されます
+### 2. Startup splash
+- When x.com opens, a pulsing blue-bird splash appears, then gives way to the normal page (can be toggled)
 
----
+### 3. Custom colors & wallpaper 🎨
+- **Custom colors**: in "Custom" background mode you can freely set the background top/bottom colors and the bird (accent) color. One-tap presets are available (Sky / Night sky / Sakura / Mint / Citrus)
+- **Wallpaper**: set any image URL as the background wallpaper (toggle on/off). Build your own Midnight Lizard-style theme
 
-## 🦊 Firefox版
+### 4. Gentle UI touches
+- Tweets lift slightly with a shadow on hover
+- Profile images glow blue and scale up on hover
+- 16px rounded cards, blue selection color
+- **Pressing Home auto-scrolls to the top of the timeline** (smooth)
 
-Firefox 109+ 対応版が `firefox/` にあります（`compat.js` で `chrome`/`browser` API を両対応）。
+### 5. Background modes (auto-follow)
+- **Auto** (default): follows X's own theme (light/dark)
+- **Light**: old-Twitter style light blue gradient
+- **Dark**: old-Twitter dark navy gradient
+- **Custom**: freely customize background colors (top/bottom) and the bird color
+- "Lazy floating birds" and "slowly flying birds" drift in the margins as ambient effects (can be toggled)
 
-1. **Zipをダウンロード** → Releaseページの `x2twitter-firefox.zip` を取得
-2. Zipを解凍
-3. Firefoxで `about:debugging#/runtime/this-firefox` を開く
-4. **「一時アドオンを読み込む…」** → 解凍したフォルダ内の `manifest.json` を選択
-5. x.com を開く 🎉
-
-※ 一時読み込みはFirefox再起動で解除されます。長期間使う場合はAMO署名を推奨。
-
----
-
-## 🎛️ 使い方
-
-### 🎨 アート集中モード（スペシャルトグル・一番上）
-拡張アイコン → 一番上の「**アート集中モード**」をONにすると、**テキスト控えめ＋画像＋いいね/RTが付いた投稿**を中心にタイムラインを集約します
-- 画像付き・いいね/RT 5以上・短文（200文字以内）の投稿だけを残し、それ以外のノイズは非表示
-- 自分の投稿・動物などの癒し投稿・災害/食べ物モードで許可した投稿は表示を維持
-- アート・イラスト・創作のキーワード（絵/イラスト/アート等）にも対応
-
-### 🔕 Busy Mode（スペシャルトグル）
-拡張アイコン → 「**Busy Mode（通知を隠す）**」をONにすると、通知（ベル）とDMの**青い数字バッジが一切付かなくなり**、**ブラウザタブの通知カウント（(3)など）も消えます**
-- 集中したいとき・通知が気になるときに最適
-
-### 背景モード切替
-拡張アイコン（🐦）をクリック → 「背景モード」で **自動 / ライト / ダーク** を選択
-
-### ネガティブニュースフィルター
-拡張アイコン → 下のトグル「**ネガティブニュースを隠す**」をON/OFF
-- ON: **ホームのタイムライン**で該当するツイートを即時非表示（スクロールで増える新着にも自動追従）
-- OFF: 元通り表示
-- **自分のアカウントの投稿は完全に除外**（フィルターONでも自分のツイートは絶対に隠れません）
-- ※ 検索結果ページ（/search）ではフィルターは**適用されません**（検索結果が消えないように）
-
-### 災害・救難支援情報を見る
-拡張アイコン → 「**災害・救難支援情報を見る**」トグルをONにすると、フィルターONのままでも**地震・避難・救助・安否・支援・募金などの情報**を表示します
-- 救難・支援の共有・拡散（RT）で誰かを助けられるようにするため
-- ただし**死者・遺体・重体など感情をえぐる表現は引き続き非表示**（メンタルを守る）
-
-### 食べ物・グルメを見る
-拡張アイコン → 「**食べ物・グルメを見る**」トグルをONにすると、フィルターONのままでも**ご飯・料理・ラーメン・スイーツ・レシピ・お腹すいた**などの食べ物投稿を表示します
-- お腹が空いている人、食料が無くて写真だけでも見たい人のために
-- 「お腹すいた」「空腹」などの声も表示対象（SOS配慮）
-- ただし**死者・遺体・重体など感情をえぐる表現を含む投稿は非表示のまま**
-
-### 演出の切替
-- **スプラッシュ演出**: ページ読み込み時の青い鳥のスプラッシュ画面（デフォルトON）
-- **鳥の演出**: 余白に浮かぶ・飛ぶ鳥（デフォルトON）
-
-### アカウント非表示 🏛️📰
-- **政府・政治家アカウントを隠す**: 世界各国の政府機関・首脳・政治家アカウント（@POTUS・@kantei・@10DowningStreetなど）の投稿を完全非表示
-- **ニュースアカウントを隠す**: 世界中のニュース・新聞社アカウント（@nhk_news・@CNN・@Reutersなど）の投稿を完全非表示
-- **トレンドを隠す**: 右サイドのトレンドパネル（「トレンド」/「Trending now」）を非表示
-- **金融アカウントを隠す**: 金融・経済メディア・中央銀行・暗号資産メディアのアカウント（@WSJ・@Bloomberg・@nikkei・@Cointelegraphなど）を完全非表示
-- ※ 自分のアカウントの投稿は対象外。アカウント一覧は `filters.js` の `GOV_ACCOUNTS` / `NEWS_ACCOUNTS` で編集できます
-
-設定は自動保存され、次回の起動時にも維持されます。
+### 6. Negative-news filter 🛡️
+When the toggle is ON, the following are hidden from the **home timeline** (`/home`) — the filter is **not applied on search results**:
+  - **Politics (Japan & worldwide)** (elections, parliament, leaders, political terms, etc.)
+  - **Conspiracy theories** (vaccines, disinformation, QAnon, etc.)
+  - **War & conflict** (Ukraine, Gaza, missiles, etc.)
+  - **Conflict-region country names** (Afghanistan, Iraq, Syria, Yemen, Sudan, Myanmar, Taiwan, South China Sea, etc.)
+  - **NAFO-related** (NAFO, fella army, etc.)
+  - **Worldwide presidents / leaders / historical figures** (US presidents, Hitler/Stalin/Mao, bin Laden, Putin, etc. Common surnames need 2 hits to avoid false positives)
+  - **News abbreviations & FX** (為替/FX, Japan-US, Russian/French/UK/German/Chinese government shorthand, etc. Single-character abbreviations use 2-hit detection to avoid false positives)
+  - **Fires, accidents, disasters**
+  - **Unfortunate news** (incidents, crimes, obituaries, etc.)
+  - **Quarrels & defamation** (confrontation, controversy, flame wars, harassment, etc.)
+  - **Negative emotional reactions** (rage, murderous intent, hatred, disgust, condescension, mounting, irritation, etc.)
+  - **Criticism that uses Japan as the subject** ("日本では / 日本人が / this country…" + a criticism keyword combined)
+  - **AI panic & incitement** (anti-AI, AI takeover/collapse, deepfake, incitement, fearmongering, disinformation, brainwashing, etc. SOS/help posts are excluded)
+  - **AI controversy** (AI art, generative AI, AI plagiarism, unauthorized training, pro/con AI debates, etc.)
+- **Data-driven detection**: 2-stage — strong signals (1 hit hides) and weak signals (2+ hits hide)
+- **Covers almost all bad news**: murders, incidents, crimes, accidents, disasters, politics, war, conflict, cyberattacks (unauthorized access, data leaks), terrorism, FX, international affairs
+- **Animal posts are allowed**: cats, dogs, zoos, pets, rescue efforts, aquariums — animal-related posts are exempt from the filter (protecting your peace)
+- **Japanese media/newspapers are allowed**: Asahi, Yomiuri, Mainichi, Nikkei, Sankei, Kyodo, Jiji, NHK, local papers, TV stations — official media posts are always shown. However, disaster casualty/damage reports (deaths, bodies, critical conditions — emotionally heavy content) stay hidden even from media accounts
+- **Multilingual**: all Japanese filter words are translated into English; detection works in both Japanese and English
+- **Kindness**: "safe / uninjured / rescued" type posts are never hidden; SOS and venting posts are intentionally exempt
 
 ---
 
-## ⚙️ 仕様
+## 📦 Installation (Chrome Extension)
 
-| 項目 | 内容 |
+1. **Download the zip** → get the latest `x2twitter.zip` from the repo's **Release page**
+2. Unzip it (e.g. `~/Downloads/x2twitter/`)
+3. Open `chrome://extensions` in Chrome
+4. Turn on **Developer mode** (top-right)
+5. Click **Load unpacked** (top-left)
+6. Select the extracted **`x2twitter` folder**
+7. Once enabled, **open x.com** 🎉
+
+### To update
+1. Click the extension's **reload** (🔄) button on `chrome://extensions`
+2. Changes are applied
+
+---
+
+## 🦊 Firefox Version
+
+A Firefox 109+ build lives in `firefox/` (uses `compat.js` to support both `chrome`/`browser` APIs).
+
+1. **Download the zip** → get `x2twitter-firefox.zip` from the Release page
+2. Unzip it
+3. Open `about:debugging#/runtime/this-firefox` in Firefox
+4. Click **Load Temporary Add-on…** → select `manifest.json` inside the extracted folder
+5. Open x.com 🎉
+
+> Temporary add-ons are removed on Firefox restart. For long-term use, AMO signing is recommended.
+
+---
+
+## 🎛️ Usage
+
+### 🎨 Art Focus Mode (special toggle · top of the popup)
+Click the extension icon → turn on **Art Focus Mode** (top) to focus the timeline on **text-light image posts with likes/RTs**
+- Keeps only posts with an image, 5+ likes/RTs, and short text (≤200 chars); other noise is hidden
+- Your own posts, animal/comfort posts, and posts allowed by Disaster/Food modes stay visible
+- Also matches art keywords (絵/illustration/art, fanart, etc.)
+
+### 🔕 Busy Mode (special toggle)
+Click the extension icon → turn on **Busy Mode (hide notifications)** and the **blue count badges on the Bell (notifications) and DMs disappear**, and the **browser tab notification count (e.g. "(3)") is hidden too**
+- Perfect for when you want to focus or are bothered by notifications
+
+### Background mode switching
+Click the extension icon (🐦) → choose **Auto / Light / Dark / Custom** under "Background mode"
+
+### Negative-news filter
+Click the extension icon → toggle **Hide negative news**
+- ON: matching tweets are instantly hidden on the **home timeline** (auto-follows new posts as you scroll)
+- OFF: everything shows again
+- **Your own account's posts are completely exempt** (they never get hidden, even with the filter ON)
+- The filter is **not applied on search results** (`/search`) so search results never disappear
+
+### Show disaster & rescue info
+Click the extension icon → turn on **Show disaster & rescue info** to keep seeing **earthquakes, evacuations, rescue, safety checks, aid, donations, etc.** even with the filter ON
+- So you can share/RT rescue and aid info and help someone
+- However, **emotionally heavy expressions (deaths, bodies, critical conditions) stay hidden** to protect your mental health
+
+### Show food & meals
+Click the extension icon → turn on **Show food & meals** to keep seeing food posts (meals, cooking, ramen, sweets, recipes, "I'm hungry", etc.) even with the filter ON
+- For people who are hungry, or who want to see food photos even if they have none
+- "I'm hungry" / "starving" voices are shown too (SOS consideration)
+- Posts containing emotionally heavy expressions (deaths, bodies, critical conditions) still stay hidden
+
+### Effects toggles
+- **Splash**: the blue-bird splash on page load (default ON)
+- **Birds**: floating/flying birds in the margins (default ON)
+
+### Account hiding 🏛️📰
+- **Hide gov & politician accounts**: completely hide government agencies, heads of state, and politicians worldwide (@POTUS, @kantei, @10DowningStreet, etc.)
+- **Hide news accounts**: completely hide news & newspaper accounts worldwide (@nhk_news, @CNN, @Reuters, etc.)
+- **Hide trends**: hide the right-side trends panel ("Trending now" / "トレンド")
+- **Hide finance accounts**: completely hide finance/economy media, central banks, and crypto media (@WSJ, @Bloomberg, @nikkei, @Cointelegraph, etc.)
+- Your own account's posts are always exempt. The account lists live in `filters.js` under `GOV_ACCOUNTS` / `NEWS_ACCOUNTS` / `FIN_ACCOUNTS`
+
+All settings are saved automatically and persist across sessions.
+
+---
+
+## ⚙️ Specs
+
+| Item | Details |
 |---|---|
-| 形式 | Chrome Extension (Manifest V3) |
-| 対象サイト | `*.x.com/*`, `*.twitter.com/*` |
-| 権限 | `storage` のみ（データ収集は一切なし） |
-| 必要ランタイム | 無し（依存ライブラリ不使用・ネイティブJSのみ） |
-| ファイル | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/`（Firefox版は `firefox/`） |
+| Type | Chrome Extension (Manifest V3) |
+| Target sites | `*.x.com/*`, `*.twitter.com/*` |
+| Permissions | `storage` only (no data collection) |
+| Runtime | None (no dependencies, plain JS) |
+| Files | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/` (Firefox build in `firefox/`) |
 
-### 技術メモ
-- **テキスト置換**: `MutationObserver` でSPAの動的コンテンツにも追従。入力欄・textarea・contenteditableは置換しない（ツイート入力が壊れない）
-- **ロゴ置換**: XロゴのSVGパス（`M18.244...`）を検出して青い鳥に置換。置換不能時は絶対配置の鳥SVGを被せるフォールバック
-- **ページ遷移**: `primaryColumn` のopacity制御＋オーバーレイ＋`pushState`/`popstate`監視で疑似クロスフェードを実現
-- **背景**: htmlにグラデーション、bodyは透明化、鳥は `z-index:-1` の固定レイヤーで余白のみに表示
-- **UI文言**: ポップアップ内の「表示言語」で日本語（日本語）/Englishを手動切替（他言語は対象外。未設定時はOS言語に追従）
+### Tech notes
+- **Text rewriting**: a `MutationObserver` follows the SPA's dynamic content. Inputs, textareas, and contenteditable elements are left untouched so composing tweets never breaks
+- **Logo**: the X logo SVG is hidden via CSS (visibility) and a blue bird is layered on top from the extension's own body layer — no structural changes to React's DOM (avoids breaking X's rendering)
+- **Home auto-scroll**: clicking Home or the logo smooth-scrolls to the top of the timeline
+- **Background**: a gradient is applied to `html`, the body is transparent, and birds float on a fixed `z-index:-1` layer in the margins only
+- **UI text**: the popup's "Language" switch lets you choose Japanese or English manually (other languages are not supported; falls back to the OS language if unset)
 
 ---
 
-## 📁 リポジトリ構成
+## 📁 Repository structure
 
 ```
 x2twitter/
-├── manifest.json      # 拡張定義（Manifest V3）
-├── filters.js         # フィルターワード定義（強/弱シグナル・例外・正規表現）
-├── i18n.js            # 表示文言（日本語/英語）と言語検出
-├── content.js         # メイン処理（置換・演出・フィルター適用）
-├── popup.html         # 拡張ポップアップUI
-├── popup.js           # ポップアップ制御
-├── firefox/           # Firefox版（compat.js + gecko manifest）
+├── manifest.json      # Extension definition (Manifest V3)
+├── filters.js         # Filter word definitions (strong/weak signals, exceptions, regexes, account lists)
+├── i18n.js            # UI text (Japanese/English) and language detection
+├── content.js         # Main logic (rewrite, effects, filter application)
+├── popup.html         # Extension popup UI
+├── popup.js           # Popup control
+├── firefox/           # Firefox build (compat.js + gecko manifest)
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
 │   ├── icon128.png
-│   └── bird.svg       # 青い鳥の元SVG
+│   └── bird.svg       # Original blue-bird SVG
 └── README.md
 ```
 
 ---
 
-## 🧑‍💻 開発者向け
+## 🧑‍💻 For developers
 
 ```bash
-# 手動テスト: chrome://extensions で「パッケージ化されていない拡張機能を読み込む」
-# zip作成例
+# Manual test: chrome://extensions → Load unpacked
+# Create a zip, e.g.
 cd x2twitter && zip -r ../x2twitter.zip . -x "*.DS_Store"
 ```
 
-### カスタマイズ
-- フィルターワードは `filters.js` 内の `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` 配列で編集できます（誤爆しやすい曖昧な英単語：conflict・fight・strike・fire・shelter・fake・flu・vaccineなどは弱シグナル設定）
-- 背景色・スプラッシュ・遷移アニメは `content.js` 内のテンプレート文字列で調整可能です
-- UI文言は `i18n.js` 内の `X2T_I18N` で編集できます（日本語 / English）
+### Customization
+- Filter words can be edited in `filters.js` in the `STRONG_JP` / `STRONG_EN` / `WEAK_JP` / `WEAK_EN` arrays (ambiguous common words such as conflict, fight, strike, fire, shelter, fake, flu, vaccine are weak-signal by default)
+- Background colors, splash, and animations can be adjusted in the template strings in `content.js`
+- UI text can be edited in `X2T_I18N` inside `i18n.js` (Japanese / English)
 
 ---
 
-## ⚠️ 注意事項
+## ⚠️ Notes
 
-- 本拡張は**ブラウザ拡張機能**であり、ブラウザ上でページの表示をフックして処理します。**X（旧Twitter）の内部システム・サーバー・データには一切アクセスも変更も行わず、すべての処理はお使いのブラウザ内（ローカル）だけで完結します**
-- X（旧Twitter）社とは一切関係のない**非公式アドオン**です
-- ページ構造の変更により、動作が崩れる可能性があります
-- 「X」の文字を「Twitter 2」に置換するため、意図しない文言の変更が起こることがあります
-- 商用利用・再配布の際は自己責任でお願いします
+- This is a **browser extension** that hooks into page rendering in your browser. It **does not access or modify X (formerly Twitter)'s internal systems, servers, or data in any way — all processing happens locally inside your browser**
+- An **unofficial add-on** with no affiliation to X (formerly Twitter)
+- Because page structures change, behavior may break
+- Rewriting "X" into "Twitter 2" can occasionally change text you didn't intend
+- Commercial use / redistribution is at your own risk
 
 ---
 
@@ -210,4 +210,4 @@ MIT
 
 ---
 
-*「小さいお子さんが、大人がいがみ合ってる姿なんて見たくないよ」という想いから、Xを優しいTwitterに戻すプロジェクトです。*
+*This project started from the wish that "small children shouldn't have to watch adults tearing each other apart." Here's to bringing back a gentle Twitter on X.*
