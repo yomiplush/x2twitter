@@ -3,7 +3,7 @@
 > A Chrome extension that brings x.com back to the nostalgic "gentle Twitter".
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter. A fan-made mod.
 
-![version](https://img.shields.io/badge/version-1.7.0-blue)
+![version](https://img.shields.io/badge/version-1.7.1-blue)
 
 ---
 

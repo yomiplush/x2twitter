@@ -316,12 +316,12 @@
       <div class="label" data-i18n="timerLabel"></div>
       <div class="timer-display" id="timerDisplay" title="クリックでリセット">--:--:--</div>
       <div class="timer-presets">
-        <button data-min="60">1h</button>
-        <button data-min="120">2h</button>
-        <button data-min="180">3h</button>
-        <button data-min="360">6h</button>
-        <button data-min="720">12h</button>
-        <button data-min="1440">24h</button>
+        <button data-min="60" data-i18n-title="timerPreset1h">1h</button>
+        <button data-min="120" data-i18n-title="timerPreset2h">2h</button>
+        <button data-min="180" data-i18n-title="timerPreset3h">3h</button>
+        <button data-min="360" data-i18n-title="timerPreset6h">6h</button>
+        <button data-min="720" data-i18n-title="timerPreset12h">12h</button>
+        <button data-min="1440" data-i18n-title="timerPreset24h">24h</button>
       </div>
       <div class="timer-custom">
         <input type="number" id="timerCustom" min="1" max="1440" placeholder="分">
@@ -431,7 +431,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.7.0</span>
+    <span class="ver">v1.7.1</span>
   </div>
   <script src="i18n.js"></script>
   <script src="popup.js"></script>

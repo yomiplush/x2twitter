@@ -32,7 +32,13 @@ const X2T_I18N = {
     timerStartLabel: "開始",
     timerStopLabel: "停止",
     timerDoneLabel: "投稿タイマー完了！投稿の時間にゃ 🐦",
-    timerNote: "同じ内容の連投はスパム判定されやすいにゃ。同じ系統の投稿は3〜6時間以上空けるのがおすすめにゃ！"
+    timerNote: "同じ内容の連投はスパム判定されやすいにゃ。同じ系統の投稿は3〜6時間以上空けるのがおすすめにゃ！",
+    timerPreset1h: "軽い投稿・別の話題ならOKにゃ",
+    timerPreset2h: "少し変化のある投稿向けにゃ",
+    timerPreset3h: "同じ系統の投稿の最低限の間隔にゃ",
+    timerPreset6h: "同じ内容の投稿に理想的な間隔にゃ",
+    timerPreset12h: "半日ペース・じっくり投稿にゃ",
+    timerPreset24h: "1日1回ペース・最も安全にゃ"
   },
   en: {
     headTagline: "Welcome back to the gentle Twitter",
@@ -67,7 +73,13 @@ const X2T_I18N = {
     timerStartLabel: "Start",
     timerStopLabel: "Stop",
     timerDoneLabel: "Timer done! Time to post 🐦",
-    timerNote: "Repeated identical posts can look spammy. Space out similar posts by 3-6+ hours!"
+    timerNote: "Repeated identical posts can look spammy. Space out similar posts by 3-6+ hours!",
+    timerPreset1h: "OK for light posts or different topics",
+    timerPreset2h: "Good for posts with some variation",
+    timerPreset3h: "Minimum spacing for similar posts",
+    timerPreset6h: "Ideal spacing for identical posts",
+    timerPreset12h: "Half-day pace, take it slow",
+    timerPreset24h: "Once-a-day pace, the safest"
   }
 };
 

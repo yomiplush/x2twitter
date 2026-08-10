@@ -89,6 +89,9 @@ function render(lang) {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = x2tText(lang, el.dataset.i18n);
   });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    el.title = x2tText(lang, el.dataset.i18nTitle);
+  });
   for (const b of langButtons) b.classList.toggle("active", b.dataset.lang === lang);
 }
 
