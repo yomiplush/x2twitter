@@ -102,6 +102,7 @@
     if (NEGATIVE_EXCEPT.test(t)) return true;
     if (currentDisaster && DISASTER_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return true;
     if (currentFood && FOOD_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return true;
+    if (currentArt && ART_ALLOW.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t)) return true;
     return false;
   }
 
@@ -112,6 +113,41 @@
     return countWeakHits(t) >= 2;
   }
 
+  // ツイート本文テキストを取得（短いほど「テキスト控えめ」）
+  function getTweetText(art) {
+    const t = art.querySelector('[data-testid="tweetText"]');
+    return t ? (t.textContent || "").trim() : "";
+  }
+
+  // いいね/リツイート数（aria-label の「12.3K Likes」等から集計）
+  function parseCount(s) {
+    s = (s || "").replace(/,/g, "").trim();
+    const m = s.match(/^([\d.]+)\s*([KMB])?$/i);
+    if (!m) return 0;
+    const mult = { K: 1e3, M: 1e6, B: 1e9 };
+    return parseFloat(m[1]) * (m[2] ? mult[m[2].toUpperCase()] : 1);
+  }
+  function getEngagement(art) {
+    let total = 0;
+    for (const sel of ['[data-testid="retweet"]', '[data-testid="like"]']) {
+      const el = art.querySelector(sel);
+      if (!el) continue;
+      const label = el.getAttribute("aria-label") || el.textContent || "";
+      const m = label.match(/([\d.,KMB]+)/i);
+      if (m) total += parseCount(m[1]);
+    }
+    return total;
+  }
+
+  // アート集中モードの対象か（画像 or アート語 + いいね/RT + テキスト控えめ）
+  function isArtPost(art) {
+    const hasImage = !!art.querySelector('[data-testid="tweetPhoto"], img[src*="/media/"]');
+    const hasArtKeyword = ART_ALLOW.test(art.textContent || "");
+    if (!hasImage && !hasArtKeyword) return false;
+    if (getTweetText(art).length > 200) return false;
+    return getEngagement(art) >= 5;
+  }
+
   // 非表示にするべきか判定（自分の投稿は常に除外）
   function shouldHide(art) {
     if (isOwnTweet(art)) return false;
@@ -120,6 +156,11 @@
       if (currentHideGov && GOV_ACCOUNTS.has(author)) return true;
       if (currentHideNews && NEWS_ACCOUNTS.has(author)) return true;
       if (currentHideFin && FIN_ACCOUNTS.has(author)) return true;
+    }
+    if (currentArt) {
+      const t = art.textContent || "";
+      if (isWhitelisted(t)) return false;
+      return !isArtPost(art);
     }
     if (!filterOn) return false;
     if (isJapaneseMediaExempt(art)) return false;
@@ -139,7 +180,7 @@
   }
 
   function filterTimeline(root) {
-    if (!filterOn && !currentHideGov && !currentHideNews && !currentHideFin) return;
+    if (!filterOn && !currentHideGov && !currentHideNews && !currentHideFin && !currentArt) return;
     if (!isHomeTimeline()) return;
     if (root && root.tagName === "ARTICLE") { hideTweet(root); return; }
     const articles = root && root.querySelectorAll
@@ -326,6 +367,7 @@
   let currentBirds = true;
   let currentDisaster = false;
   let currentFood = false;
+  let currentArt = false;
   let currentHideTrends = false;
   let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
   let wallpaperOn = false;
@@ -657,13 +699,14 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
+  X2TStorage.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
     currentBirds = x2tBirds !== false;
     currentDisaster = !!x2tDisaster;
     currentFood = !!x2tFood;
+    currentArt = !!x2tArt;
     currentHideGov = !!x2tHideGov;
     currentHideNews = !!x2tHideNews;
     currentHideTrends = !!x2tHideTrends;
@@ -717,6 +760,10 @@
     }
     if (changes.x2tHideFin) {
       currentHideFin = !!changes.x2tHideFin.newValue;
+      refilter();
+    }
+    if (changes.x2tArt) {
+      currentArt = !!changes.x2tArt.newValue;
       refilter();
     }
     if (changes.x2tCustom) {

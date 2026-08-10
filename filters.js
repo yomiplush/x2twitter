@@ -297,3 +297,7 @@ const FIN_ACCOUNTS = new Set([
   // マーケット・アナリスト
   "zerohedge", "stocktwits", "markets" 
 ]);
+
+// ===== アートモード（スペシャル）=====
+// 「アート中心モード」ON時に表示を許可するアート・創作系キーワード
+const ART_ALLOW = /(?:絵|イラスト|イラストレーション|イラストレーター|アート|アーティスト|作品|描いた|描き|描いて|描き方|お絵かき|スケッチ|ドローイング|デッサン|漫画|マンガ|ファンアート|デジタルアート|水彩|水彩画|油絵|アクリル画|彫刻|芸術|芸術家|画家|画廊|ギャラリー|展示|展示会|個展|絵画|アニメ|アニメーション|ドット絵|落書き|ラフ画|線画|原画|塗り絵|美術|美術館|創作者|創作|絵を描く|art|artist|artists|illustration|illustrations|illustrator|drawing|drawings|drew|sketch|sketches|painting|paintings|painted|digital art|fanart|fan art|artwork|artworks|gallery|manga|anime|sculpture|watercolor|acrylic|canvas|portrait|abstract|concept art|doodle|sketchbook|paint|artistic|creativity|creative|masterpiece)/i;

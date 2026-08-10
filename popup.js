@@ -1,6 +1,7 @@
 const buttons = document.querySelectorAll("#seg button");
 const langButtons = document.querySelectorAll("#langSeg button");
 const filterToggle = document.getElementById("filter");
+const artToggle = document.getElementById("art");
 const disasterToggle = document.getElementById("disaster");
 const foodToggle = document.getElementById("food");
 const hideGovToggle = document.getElementById("hideGov");
@@ -38,11 +39,12 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
+    artToggle.checked = !!x2tArt;
     disasterToggle.checked = !!x2tDisaster;
     foodToggle.checked = !!x2tFood;
     hideGovToggle.checked = !!x2tHideGov;
@@ -92,6 +94,10 @@ wallpaperUrl.addEventListener("change", () => {
 
 filterToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tFilter: filterToggle.checked });
+});
+
+artToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ x2tArt: artToggle.checked });
 });
 
 disasterToggle.addEventListener("change", () => {

@@ -144,6 +144,21 @@
     transition: background-color .15s ease;
   }
   .row:hover { background: var(--accent-soft); }
+  .row.special {
+    background: linear-gradient(135deg, rgba(29,161,242,.16), rgba(224,32,144,.14));
+    border: 1px solid rgba(29,161,242,.35);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .row.special .special-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .row.special .special-inner::before {
+    content: "🎨";
+    font-size: 14px;
+  }
   .switch { position: relative; width: 44px; height: 24px; flex: none; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
@@ -186,6 +201,11 @@
     </div>
   </div>
   <div class="body">
+    <label class="row special">
+      <span class="special-inner" data-i18n="artLabel"></span>
+      <span class="switch"><input type="checkbox" id="art"><span class="slider"></span></span>
+    </label>
+    <div class="divider"></div>
     <div class="label" data-i18n="bgLabel"></div>
     <div class="seg" id="seg">
       <button data-mode="auto" data-i18n="bgAuto"></button>
@@ -269,7 +289,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.6.2</span>
+    <span class="ver">v1.6.3</span>
   </div>
   <script src="i18n.js"></script>
   <script src="compat.js"></script>
