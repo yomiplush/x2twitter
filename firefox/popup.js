@@ -3,6 +3,8 @@ const langButtons = document.querySelectorAll("#langSeg button");
 const filterToggle = document.getElementById("filter");
 const disasterToggle = document.getElementById("disaster");
 const foodToggle = document.getElementById("food");
+const hideGovToggle = document.getElementById("hideGov");
+const hideNewsToggle = document.getElementById("hideNews");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -34,13 +36,15 @@ function saveCustom() {
 }
 
 X2TStorage.get(
-  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
     disasterToggle.checked = !!x2tDisaster;
     foodToggle.checked = !!x2tFood;
+    hideGovToggle.checked = !!x2tHideGov;
+    hideNewsToggle.checked = !!x2tHideNews;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
     const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
@@ -92,6 +96,14 @@ disasterToggle.addEventListener("change", () => {
 
 foodToggle.addEventListener("change", () => {
   X2TStorage.set({ x2tFood: foodToggle.checked });
+});
+
+hideGovToggle.addEventListener("change", () => {
+  X2TStorage.set({ x2tHideGov: hideGovToggle.checked });
+});
+
+hideNewsToggle.addEventListener("change", () => {
+  X2TStorage.set({ x2tHideNews: hideNewsToggle.checked });
 });
 
 splashToggle.addEventListener("change", () => {

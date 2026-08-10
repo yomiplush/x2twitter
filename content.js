@@ -25,6 +25,8 @@
   let filterOn = false;
   const hiddenTweets = new Set();
   let myHandle = null;
+  let currentHideGov = false;
+  let currentHideNews = false;
 
   // 現在ログイン中の自分のハンドルを取得（プロフィールタブのhrefから）
   function getMyHandle() {
@@ -41,12 +43,9 @@
     return null;
   }
 
-  // ツイートが自分の投稿かどうか（作者リンクを確認）
+  // ツイートが自分の投稿かどうか
   function isOwnTweet(art) {
-    if (!myHandle) return false;
-    const target = "/" + myHandle;
-    const name = art.querySelector('[data-testid="User-Name"]');
-    return !!(name && name.querySelector('a[href="' + target + '"]'));
+    return !!myHandle && getTweetHandle(art) === myHandle;
   }
 
   // ツイートの作者ハンドルを取得（@ なし・小文字）
@@ -112,8 +111,21 @@
     return countWeakHits(t) >= 2;
   }
 
+  // 非表示にするべきか判定（自分の投稿は常に除外）
+  function shouldHide(art) {
+    if (isOwnTweet(art)) return false;
+    const author = getTweetHandle(art);
+    if (author) {
+      if (currentHideGov && GOV_ACCOUNTS.has(author)) return true;
+      if (currentHideNews && NEWS_ACCOUNTS.has(author)) return true;
+    }
+    if (!filterOn) return false;
+    if (isJapaneseMediaExempt(art)) return false;
+    return matchesNegative(art);
+  }
+
   function hideTweet(art) {
-    if (art.style.display !== "none" && !isOwnTweet(art) && matchesNegative(art) && !isJapaneseMediaExempt(art)) {
+    if (art.style.display !== "none" && shouldHide(art)) {
       hiddenTweets.add(art);
       art.style.display = "none";
     }
@@ -125,7 +137,7 @@
   }
 
   function filterTimeline(root) {
-    if (!filterOn) return;
+    if (!filterOn && !currentHideGov && !currentHideNews) return;
     if (!isHomeTimeline()) return;
     if (root && root.tagName === "ARTICLE") { hideTweet(root); return; }
     const articles = root && root.querySelectorAll
@@ -619,13 +631,15 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
     currentBirds = x2tBirds !== false;
     currentDisaster = !!x2tDisaster;
     currentFood = !!x2tFood;
+    currentHideGov = !!x2tHideGov;
+    currentHideNews = !!x2tHideNews;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
@@ -658,6 +672,14 @@
     }
     if (changes.x2tFood) {
       currentFood = !!changes.x2tFood.newValue;
+      refilter();
+    }
+    if (changes.x2tHideGov) {
+      currentHideGov = !!changes.x2tHideGov.newValue;
+      refilter();
+    }
+    if (changes.x2tHideNews) {
+      currentHideNews = !!changes.x2tHideNews.newValue;
       refilter();
     }
     if (changes.x2tCustom) {

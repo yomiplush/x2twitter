@@ -227,3 +227,54 @@ const DISASTER_EMOTIONAL_BLOCK = /(?:死亡|死者|亡くなり|亡くなった|
 // ===== 食べ物・グルメモード =====
 // 「食べ物・グルメを見る」ON時に表示を許可する食べ物・食事系キーワード
 const FOOD_ALLOW = /(?:ご飯|ごはん|朝ごはん|昼ごはん|夜ごはん|朝食|昼食|夕食|食事|食べ物|食べもの|グルメ|料理|お料理|レシピ|クッキング|ラーメン|そば|うどん|寿司|すし|カレー|ピザ|ハンバーガー|ハンバーグ|パン|ケーキ|スイーツ|お菓子|デザート|アイス|飲み物|ドリンク|コーヒー|ジュース|カフェ|喫茶店|レストラン|居酒屋|焼肉|お好み焼き|たこ焼き|弁当|お弁当|パスタ|サラダ|スープ|味噌汁|おでん|鍋|定食|丼|天ぷら|刺身|焼き魚|焼き鳥|ステーキ|フルーツ|果物|野菜|卵|豆腐|チーズ|ヨーグルト|おいしい|美味しい|うまい|食べたい|お腹すいた|お腹がすいた|腹ペコ|空腹|満腹|もぐもぐ|ぱくぱく|food|meal|meals|delicious|yummy|tasty|cooking|recipe|recipes|restaurant|breakfast|lunch|dinner|snack|snacks|pizza|ramen|sushi|curry|cake|dessert|coffee|hungry|starving)/i;
+
+// ===== アカウント非表示モード =====
+// 「政府・政治家アカウントを隠す」/「ニュースアカウントを隠す」ON時に完全非表示にする @ハンドル一覧
+const GOV_ACCOUNTS = new Set([
+  // 米国
+  "potus", "vp", "whitehouse", "joebiden", "barackobama", "kamalaharris",
+  "hillaryclinton", "berniesanders", "aoc", "senwarren", "senschumer",
+  "leaderhakeemjeffries", "gopleader", "housegop", "senategop", "gop",
+  "dnc", "housedemocrats", "senatedems", "tedcruz", "marcorubio", "randpaul", "speakerjohnson",
+  // 英国
+  "10downingstreet", "rishisunak", "keir_starmer", "uklabour", "conservatives", "borisjohnson",
+  // フランス
+  "elysee", "emmanuelmacron", "gouvernementfr",
+  // ドイツ
+  "bundeskanzler", "olafscholz", "bundesregierung",
+  // イタリア
+  "giorgiameloni",
+  // カナダ
+  "justinptrudeau", "canadianpm",
+  // インド
+  "narendramodi", "pmoindia",
+  // 日本（首相官邸・与党・国会など）
+  "kantei", "kishida230", "jimin_koho", "shugiin_japan", "sangiin_japan", "mofajapan_jp", "mextjapan",
+  // ウクライナ
+  "zelenskyyua", "ukraine", "denys_shmyhal",
+  // ロシア
+  "kremlinrussia_e", "mfa_russia",
+  // イスラエル
+  "netanyahu", "israelipm", "israelmfa", "israel",
+  // 中国
+  "mfa_china", "china_spokesperson",
+  // 国際機関
+  "nato", "un", "eu_commission"
+]);
+
+const NEWS_ACCOUNTS = new Set([
+  // 日本のニュース
+  "nhk_news", "kyodo_official", "jijicom", "asahicom", "yomiuri_online",
+  "mainichi", "sankei_news", "nikkei", "thejapantimes", "afpbbnews",
+  "bbcnewsjapan", "cnn_co_jp", "reuters_japan", "wsjjapan", "bloombergjapan",
+  "tbsnews", "news_tbs", "tv_asahi_news", "fnn_news",
+  // 世界のニュース
+  "cnn", "cnnbreaking", "bbcbreaking", "bbcworld", "bbcnews",
+  "nytimes", "washingtonpost", "wsj", "reuters", "ap", "afp",
+  "aljazeera", "ajenglish", "skynews", "guardian", "theguardian",
+  "independent", "telegraph", "financialtimes", "economist", "time", "newsweek",
+  "foxnews", "msnbc", "abcnews", "cbsnews", "nbcnews", "pbsnews", "bloomberg",
+  "dwnews", "dw_english", "france24", "rf_english",
+  "straits_times", "scmp", "hindustantimes", "thehindu", "timesofindia",
+  "channel4news", "itvnews"
+]);
