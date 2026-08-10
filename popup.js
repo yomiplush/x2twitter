@@ -6,6 +6,7 @@ const foodToggle = document.getElementById("food");
 const hideGovToggle = document.getElementById("hideGov");
 const hideNewsToggle = document.getElementById("hideNews");
 const hideTrendsToggle = document.getElementById("hideTrends");
+const hideFinToggle = document.getElementById("hideFin");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -37,8 +38,8 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
+  ({ x2tMode, x2tFilter, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
@@ -47,6 +48,7 @@ chrome.storage.local.get(
     hideGovToggle.checked = !!x2tHideGov;
     hideNewsToggle.checked = !!x2tHideNews;
     hideTrendsToggle.checked = !!x2tHideTrends;
+    hideFinToggle.checked = !!x2tHideFin;
     splashToggle.checked = x2tSplash !== false;
     birdsToggle.checked = x2tBirds !== false;
     const c = x2tCustom && x2tCustom.top ? x2tCustom : DEFAULT_CUSTOM;
@@ -110,6 +112,10 @@ hideNewsToggle.addEventListener("change", () => {
 
 hideTrendsToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tHideTrends: hideTrendsToggle.checked });
+});
+
+hideFinToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ x2tHideFin: hideFinToggle.checked });
 });
 
 splashToggle.addEventListener("change", () => {

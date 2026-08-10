@@ -27,6 +27,7 @@
   let myHandle = null;
   let currentHideGov = false;
   let currentHideNews = false;
+  let currentHideFin = false;
 
   // 現在ログイン中の自分のハンドルを取得（プロフィールタブのhrefから）
   function getMyHandle() {
@@ -118,6 +119,7 @@
     if (author) {
       if (currentHideGov && GOV_ACCOUNTS.has(author)) return true;
       if (currentHideNews && NEWS_ACCOUNTS.has(author)) return true;
+      if (currentHideFin && FIN_ACCOUNTS.has(author)) return true;
     }
     if (!filterOn) return false;
     if (isJapaneseMediaExempt(art)) return false;
@@ -137,7 +139,7 @@
   }
 
   function filterTimeline(root) {
-    if (!filterOn && !currentHideGov && !currentHideNews) return;
+    if (!filterOn && !currentHideGov && !currentHideNews && !currentHideFin) return;
     if (!isHomeTimeline()) return;
     if (root && root.tagName === "ARTICLE") { hideTweet(root); return; }
     const articles = root && root.querySelectorAll
@@ -655,7 +657,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -665,6 +667,7 @@
     currentHideGov = !!x2tHideGov;
     currentHideNews = !!x2tHideNews;
     currentHideTrends = !!x2tHideTrends;
+    currentHideFin = !!x2tHideFin;
     if (x2tCustom && x2tCustom.top && x2tCustom.bottom && x2tCustom.accent) customColors = x2tCustom;
     wallpaperUrl = x2tWallpaperUrl || "";
     wallpaperOn = !!x2tWallpaperOn;
@@ -711,6 +714,10 @@
     if (changes.x2tHideTrends) {
       currentHideTrends = !!changes.x2tHideTrends.newValue;
       applyTrendsHide();
+    }
+    if (changes.x2tHideFin) {
+      currentHideFin = !!changes.x2tHideFin.newValue;
+      refilter();
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;

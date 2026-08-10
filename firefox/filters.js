@@ -278,3 +278,22 @@ const NEWS_ACCOUNTS = new Set([
   "straits_times", "scmp", "hindustantimes", "thehindu", "timesofindia",
   "channel4news", "itvnews"
 ]);
+
+// ===== 金融・経済アカウント非表示モード =====
+// 「金融アカウントを隠す」ON時に完全非表示にする @ハンドル一覧
+const FIN_ACCOUNTS = new Set([
+  // 世界の金融メディア
+  "wsj", "financialtimes", "ft", "bloomberg", "cnbc", "marketwatch",
+  "businessinsider", "business", "fortunemagazine", "forbes", "economist",
+  "investingcom", "thestreet", "barronsofficial",
+  // 日本の金融メディア
+  "nikkei", "nikkei_plus", "nikkei_news", "marketecom",
+  // 中央銀行・金融当局・国際機関
+  "federalreserve", "ecb", "bankofengland", "bankofcanada", "bankofjapan_en",
+  "imf", "worldbank", "us_treasury",
+  // 仮想通貨・ブロックチェーン
+  "cointelegraph", "coindesk", "bitcoin", "theblock__", "cryptopotato",
+  "watcherguru", "u.today", "coinjournal",
+  // マーケット・アナリスト
+  "zerohedge", "stocktwits", "markets" 
+]);
