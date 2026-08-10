@@ -368,6 +368,7 @@
   let currentDisaster = false;
   let currentFood = false;
   let currentArt = false;
+  let currentBusy = false;
   let currentHideTrends = false;
   let customColors = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
   let wallpaperOn = false;
@@ -522,6 +523,29 @@
     }
   }
 
+  // ===== Busy Mode（通知・DMの青い数字バッジをすべて非表示）=====
+  let busyStyle = null;
+  function applyBusy() {
+    if (currentBusy) {
+      if (!busyStyle) {
+        busyStyle = document.createElement("style");
+        busyStyle.id = "x2t-busy";
+        document.head.appendChild(busyStyle);
+      }
+      busyStyle.textContent = `
+        [data-testid="AppTabBar_Notifications_Link"] [dir="ltr"],
+        [data-testid="AppTabBar_DirectMessage_Link"] [dir="ltr"],
+        [data-testid="AppTabBar_Notifications_Link"] [aria-label*="notifications"],
+        [data-testid="AppTabBar_DirectMessage_Link"] [aria-label*="message"] {
+          display: none !important;
+        }
+      `;
+    } else {
+      if (busyStyle) busyStyle.remove();
+      busyStyle = null;
+    }
+  }
+
   function fixFavicon() {
     let link = document.querySelector('link[rel~="icon"]');
     if (!link) {
@@ -641,6 +665,7 @@
     ensureLogoBird();
     myHandle = getMyHandle();
     applyTrendsHide();
+    applyBusy();
   }
 
   function fixSubtree(root) {
@@ -699,7 +724,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); myHandle = getMyHandle(); }, 5000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tDisaster", "x2tFood", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tDisaster, x2tFood, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -707,6 +732,7 @@
     currentDisaster = !!x2tDisaster;
     currentFood = !!x2tFood;
     currentArt = !!x2tArt;
+    currentBusy = !!x2tBusy;
     currentHideGov = !!x2tHideGov;
     currentHideNews = !!x2tHideNews;
     currentHideTrends = !!x2tHideTrends;
@@ -717,6 +743,7 @@
     showSplash();
     applyBackground();
     applyTrendsHide();
+    applyBusy();
     setFilter(!!x2tFilter);
   });
   chrome.storage.onChanged.addListener((changes, area) => {
@@ -765,6 +792,10 @@
     if (changes.x2tArt) {
       currentArt = !!changes.x2tArt.newValue;
       refilter();
+    }
+    if (changes.x2tBusy) {
+      currentBusy = !!changes.x2tBusy.newValue;
+      applyBusy();
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;

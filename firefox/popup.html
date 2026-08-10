@@ -159,6 +159,20 @@
     content: "🎨";
     font-size: 14px;
   }
+  .row.special.busy {
+    background: linear-gradient(135deg, rgba(244,158,11,.18), rgba(224,32,144,.14));
+    border-color: rgba(244,158,11,.45);
+    margin-top: 6px;
+  }
+  .row.special.busy .busy-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .row.special.busy .busy-inner::before {
+    content: "🔕";
+    font-size: 14px;
+  }
   .switch { position: relative; width: 44px; height: 24px; flex: none; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
@@ -204,6 +218,10 @@
     <label class="row special">
       <span class="special-inner" data-i18n="artLabel"></span>
       <span class="switch"><input type="checkbox" id="art"><span class="slider"></span></span>
+    </label>
+    <label class="row special busy">
+      <span class="busy-inner" data-i18n="busyLabel"></span>
+      <span class="switch"><input type="checkbox" id="busy"><span class="slider"></span></span>
     </label>
     <div class="divider"></div>
     <div class="label" data-i18n="bgLabel"></div>
@@ -289,7 +307,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.6.3</span>
+    <span class="ver">v1.6.4</span>
   </div>
   <script src="i18n.js"></script>
   <script src="compat.js"></script>
