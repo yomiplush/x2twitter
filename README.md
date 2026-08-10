@@ -3,7 +3,7 @@
 > A Chrome extension that brings x.com back to the nostalgic "gentle Twitter".
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter. A fan-made mod.
 
-![version](https://img.shields.io/badge/version-1.6.5-blue)
+![version](https://img.shields.io/badge/version-1.7.0-blue)
 
 ---
 
@@ -102,6 +102,14 @@ Click the extension icon → turn on **Art Focus Mode** (top) to focus the timel
 ### 🔕 Busy Mode (special toggle)
 Click the extension icon → turn on **Busy Mode (hide notifications)** and the **blue count badges on the Bell (notifications) and DMs disappear**, and the **browser tab notification count (e.g. "(3)") is hidden too**
 - Perfect for when you want to focus or are bothered by notifications
+
+### ⏰ Posting timer (algorithm-optimized)
+Click the extension icon → use the **Posting timer** at the top of the popup
+- One-tap presets: **1h / 2h / 3h / 6h / 12h / 24h**, or enter custom minutes
+- A gentle **chime plays when the timer finishes** (toggleable), even if the popup is closed
+- The countdown keeps running in the background (via `chrome.alarms`) and survives popup close/reopen
+- Why these intervals? Repeated identical posts in a short window can look spammy to the algorithm — spacing out similar posts by **3–6+ hours** is the recommended rhythm
+- Click the countdown to stop/reset the timer
 
 ### Background mode switching
 Click the extension icon (🐦) → choose **Auto / Light / Dark / Custom** under "Background mode"

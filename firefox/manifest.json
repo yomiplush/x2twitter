@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X to Twitter 2",
-  "version": "1.6.6",
+  "version": "1.7.0",
   "description": "x.comを優しいTwitterに戻すChrome拡張。青い鳥・Twitter 2表記・ネガティブニュースフィルター",
   "browser_specific_settings": {
     "gecko": {
@@ -9,7 +9,10 @@
       "strict_min_version": "109.0"
     }
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

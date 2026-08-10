@@ -18,8 +18,65 @@ const colorBottom = document.getElementById("colorBottom");
 const colorAccent = document.getElementById("colorAccent");
 const wallpaperToggle = document.getElementById("wallpaper");
 const wallpaperUrl = document.getElementById("wallpaperUrl");
+const timerDisplay = document.getElementById("timerDisplay");
+const timerPresets = document.querySelectorAll(".timer-presets button");
+const timerCustom = document.getElementById("timerCustom");
+const timerStart = document.getElementById("timerStart");
+const timerStop = document.getElementById("timerStop");
+const timerSound = document.getElementById("timerSound");
+const timerStatus = document.getElementById("timerStatus");
 
 const DEFAULT_CUSTOM = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
+const TIMER_ALARM = "x2tPostTimer";
+
+let currentLang = "ja";
+let timerInterval = null;
+
+function fmt(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = String(Math.floor(s / 3600)).padStart(2, "0");
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+  const sec = String(s % 60).padStart(2, "0");
+  return h + ":" + m + ":" + sec;
+}
+
+function startTimer(ms) {
+  const end = Date.now() + ms;
+  X2TStorage.set({ x2tTimerEnd: end, x2tTimerDone: false });
+  X2TAlarms.create(TIMER_ALARM, { when: end });
+  updateTimer(end);
+  document.body.classList.add("timer-running");
+  document.body.classList.remove("timer-done");
+}
+
+function stopTimer() {
+  X2TAlarms.clear(TIMER_ALARM);
+  X2TStorage.set({ x2tTimerEnd: null, x2tTimerDone: false });
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerDisplay.textContent = "--:--:--";
+  timerStatus.textContent = "";
+  document.body.classList.remove("timer-running", "timer-done");
+}
+
+function updateTimer(end) {
+  clearInterval(timerInterval);
+  const tick = () => {
+    const remain = end - Date.now();
+    if (remain <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerDisplay.textContent = "00:00:00";
+      document.body.classList.remove("timer-running");
+      document.body.classList.add("timer-done");
+      timerStatus.textContent = x2tText(currentLang, "timerDoneLabel");
+      return;
+    }
+    timerDisplay.textContent = fmt(remain);
+  };
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
 
 function setActive(mode) {
   for (const b of buttons) b.classList.toggle("active", b.dataset.mode === mode);
@@ -27,6 +84,7 @@ function setActive(mode) {
 }
 
 function render(lang) {
+  currentLang = lang;
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = x2tText(lang, el.dataset.i18n);
@@ -41,8 +99,8 @@ function saveCustom() {
 }
 
 X2TStorage.get(
-  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn"],
-  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tDisaster", "x2tFood", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tDisaster, x2tFood, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
@@ -63,6 +121,15 @@ X2TStorage.get(
     colorAccent.value = c.accent;
     wallpaperToggle.checked = x2tWallpaperOn !== false;
     wallpaperUrl.value = x2tWallpaperUrl || "";
+    timerSound.checked = x2tTimerSound !== false;
+    if (x2tTimerDone) {
+      timerDisplay.textContent = "00:00:00";
+      document.body.classList.add("timer-done");
+      timerStatus.textContent = x2tText(currentLang, "timerDoneLabel");
+    } else if (x2tTimerEnd && x2tTimerEnd > Date.now()) {
+      updateTimer(x2tTimerEnd);
+      document.body.classList.add("timer-running");
+    }
   }
 );
 
@@ -150,3 +217,40 @@ for (const b of langButtons) {
     render(b.dataset.lang);
   });
 }
+
+timerPresets.forEach((b) => {
+  b.addEventListener("click", () => {
+    startTimer(parseInt(b.dataset.min, 10) * 60000);
+  });
+});
+
+timerStart.addEventListener("click", () => {
+  const min = parseInt(timerCustom.value, 10);
+  if (!min || min < 1) return;
+  startTimer(min * 60000);
+});
+
+timerStop.addEventListener("click", stopTimer);
+
+timerDisplay.addEventListener("click", stopTimer);
+
+timerSound.addEventListener("change", () => {
+  X2TStorage.set({ x2tTimerSound: timerSound.checked });
+});
+
+X2TStorage.onChanged.addListener((changes, area) => {
+  if (area !== "local") return;
+  if (changes.x2tTimerDone && changes.x2tTimerDone.newValue) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerDisplay.textContent = "00:00:00";
+    document.body.classList.remove("timer-running");
+    document.body.classList.add("timer-done");
+    timerStatus.textContent = x2tText(currentLang, "timerDoneLabel");
+  }
+  if (changes.x2tTimerEnd && changes.x2tTimerEnd.newValue) {
+    updateTimer(changes.x2tTimerEnd.newValue);
+    document.body.classList.add("timer-running");
+    document.body.classList.remove("timer-done");
+  }
+});

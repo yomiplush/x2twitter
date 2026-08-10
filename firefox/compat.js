@@ -26,3 +26,11 @@ const X2TStorage = (() => {
   }
   return { get, set, onChanged: root.storage.onChanged };
 })();
+
+const X2TAlarms = (() => {
+  const root = (typeof browser !== "undefined" && browser.alarms) ? browser : chrome;
+  return {
+    create: (name, info) => root.alarms.create(name, info),
+    clear: (name) => root.alarms.clear(name)
+  };
+})();

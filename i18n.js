@@ -26,7 +26,13 @@ const X2T_I18N = {
     birdsLabel: "鳥の演出",
     langLabel: "表示言語",
     footNote: "ブラウザ内のみで動作",
-    splashSub: "優しいTwitterへ、ようこそ"
+    splashSub: "優しいTwitterへ、ようこそ",
+    timerLabel: "投稿タイマー（アルゴリズム最適化）",
+    timerSoundLabel: "完了時に効果音",
+    timerStartLabel: "開始",
+    timerStopLabel: "停止",
+    timerDoneLabel: "投稿タイマー完了！投稿の時間にゃ 🐦",
+    timerNote: "同じ内容の連投はスパム判定されやすいにゃ。同じ系統の投稿は3〜6時間以上空けるのがおすすめにゃ！"
   },
   en: {
     headTagline: "Welcome back to the gentle Twitter",
@@ -55,7 +61,13 @@ const X2T_I18N = {
     birdsLabel: "Floating birds",
     langLabel: "Language",
     footNote: "Runs locally in your browser",
-    splashSub: "Welcome back to the gentle Twitter"
+    splashSub: "Welcome back to the gentle Twitter",
+    timerLabel: "Posting timer (algorithm-optimized)",
+    timerSoundLabel: "Sound on completion",
+    timerStartLabel: "Start",
+    timerStopLabel: "Stop",
+    timerDoneLabel: "Timer done! Time to post 🐦",
+    timerNote: "Repeated identical posts can look spammy. Space out similar posts by 3-6+ hours!"
   }
 };
 
