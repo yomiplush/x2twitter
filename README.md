@@ -3,7 +3,7 @@
 > A Chrome extension that brings x.com back to the nostalgic "gentle Twitter".
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter. A fan-made mod.
 
-![version](https://img.shields.io/badge/version-1.7.1-blue)
+![version](https://img.shields.io/badge/version-1.7.2-blue)
 
 ---
 
@@ -77,20 +77,6 @@ When the toggle is ON, the following are hidden from the **home timeline** (`/ho
 
 ---
 
-## 🦊 Firefox Version
-
-A Firefox 109+ build lives in `firefox/` (uses `compat.js` to support both `chrome`/`browser` APIs).
-
-1. **Download the zip** → get `x2twitter-firefox.zip` from the Release page
-2. Unzip it
-3. Open `about:debugging#/runtime/this-firefox` in Firefox
-4. Click **Load Temporary Add-on…** → select `manifest.json` inside the extracted folder
-5. Open x.com 🎉
-
-> Temporary add-ons are removed on Firefox restart. For long-term use, AMO signing is recommended.
-
----
-
 ## 🎛️ Usage
 
 ### 🎨 Art Focus Mode (special toggle · top of the popup)
@@ -156,7 +142,7 @@ All settings are saved automatically and persist across sessions.
 | Target sites | `*.x.com/*`, `*.twitter.com/*` |
 | Permissions | `storage` only (no data collection) |
 | Runtime | None (no dependencies, plain JS) |
-| Files | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `icons/` (Firefox build in `firefox/`) |
+| Files | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `background.js` / `offscreen.html` / `offscreen.js` / `icons/` |
 
 ### Tech notes
 - **Text rewriting**: a `MutationObserver` follows the SPA's dynamic content. Inputs, textareas, and contenteditable elements are left untouched so composing tweets never breaks
@@ -172,12 +158,14 @@ All settings are saved automatically and persist across sessions.
 ```
 x2twitter/
 ├── manifest.json      # Extension definition (Manifest V3)
+├── background.js      # Posting-timer alarm + chime playback
 ├── filters.js         # Filter word definitions (strong/weak signals, exceptions, regexes, account lists)
 ├── i18n.js            # UI text (Japanese/English) and language detection
 ├── content.js         # Main logic (rewrite, effects, filter application)
 ├── popup.html         # Extension popup UI
 ├── popup.js           # Popup control
-├── firefox/           # Firefox build (compat.js + gecko manifest)
+├── offscreen.html     # Chrome offscreen doc (timer chime audio)
+├── offscreen.js       # Offscreen chime player
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
