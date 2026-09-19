@@ -335,6 +335,15 @@ const INSULT_STRONG = new RegExp(`(?:${INSULT_JP.join("|")})|(?:${INSULT_EN.map(
 // 「rescue kittens」「保護犬」「猫のごはん」などを、災害支援やグルメと誤判定しない。
 const PET_SAFE = /(?:動物|動物園|保護犬|保護猫|保護活動|野良猫|野良犬|子犬|子猫|ペット|里親|譲渡会|猫カフェ|アニマル|カワウソ|フェレット|モルモット|ハリネズミ|kitten|kittens|puppy|puppies|bunny|rabbit|hamster|animal|animals|dog|dogs|cat|cats|pet|pets|foster|adoption|aquarium|panda|wildlife)/i;
 
+// ===== 優しい投稿（GENTLE）判定 =====
+// 「優しいTwitter 2」のDoomScrolling回避で、悪い投稿をスキップして辿り着きたい投稿。
+// 主に動物・ペット（写真つきが多い）を対象にする。日本語・英語の両対応。
+const ANIMAL_SIGNAL = /(?:犬|猫|いぬ|ねこ|わんこ|にゃんこ|子犬|子猫|保護犬|保護猫|保護活動|野良猫|野良犬|ペット|動物|動物園|里親|譲渡会|猫カフェ|ねこカフェ|ハムスター|うさぎ|ウサギ|インコ|オウム|カワウソ|フェレット|モルモット|ハリネズミ|パンダ|水族館|アニマル|kitten|kittens|puppy|puppies|bunny|rabbit|hamster|parrot|panda|otter|ferret|hedgehog|aquarium|animal|animals|dog|dogs|cat|cats|pet|pets|kawaii|adorable)/i;
+
+function x2tIsAnimal(text) {
+  return ANIMAL_SIGNAL.test(text || "");
+}
+
 // ===== フィルター強度（弱シグナルの必要ヒット数）=====
 // 強シグナルは常に1ヒットで非表示。弱シグナル（曖昧語）だけを強度で調整する。
 //   weak=3 / standard=2 / strong=1 ヒットで非表示

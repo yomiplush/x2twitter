@@ -12,7 +12,7 @@
 //     （返信はフィルタ対象）
 //
 // 公開API: window.X2TFilter
-//   configure({filter,hideGov,hideNews,hideFin,hideInsult,hideDisaster,hideFood,hideAiHype,art})
+//   configure({filter,hideGov,hideNews,hideFin,hideInsult,hideDisaster,hideFood,hideAiHype,art,gentle,strength})
 //   refreshHandle()  ログイン中ハンドルを再取得
 //   apply(root)      追加された部分木／記事を判定
 //   refilter()       全画面を再判定
@@ -33,6 +33,7 @@
     hideFood: true,
     hideAiHype: true,
     art: false,
+    gentle: true,
   };
 
   let myHandle = null;
@@ -155,12 +156,151 @@
 
   function applyArticle(art) {
     if (!art || art.tagName !== "ARTICLE") return;
-    if (computeHide(art)) {
+    const hide = computeHide(art);
+    if (hide) {
       hiddenTweets.add(art);
       art.style.display = "none";
     } else {
       hiddenTweets.delete(art);
       if (art.style.display === "none") art.style.display = "";
+    }
+    gentleMark(art, hide);
+  }
+
+  // ===== 優しいTwitter 2：DoomScrolling回避 =====
+  // 悪い投稿が連続したら、動物写真などの「優しい投稿」に辿り着くまで
+  // フィードを少しずつ送ってスキップする。回数・間隔を制限し、いつでも停止可能。
+  const GENTLE_THRESHOLD = 6;      // 連続して隠れた投稿数
+  const GENTLE_NUDGES = 4;         // 1回の起動で送る回数
+  const GENTLE_COOLDOWN = 12000;   // 起動間隔(ms)
+  const gentle = {
+    hiddenRun: 0,
+    active: false,
+    nudgesLeft: 0,
+    lastEnd: 0,
+    timer: null,
+    seen: new WeakSet(),
+  };
+
+  function gentleLang() {
+    try {
+      const l = (navigator.language || "en").toLowerCase();
+      return l.startsWith("ja") ? "ja" : "en";
+    } catch (e) { return "en"; }
+  }
+  const GENTLE_MSG = {
+    ja: { searching: "🐾 優しい投稿を探しています…", stop: "やめる", found: "🐦 優しい投稿を見つけたよ", rest: "🐦 少し休憩しよう" },
+    en: { searching: "🐾 Looking for gentle posts…", stop: "Stop", found: "🐦 Found a gentle post", rest: "🐦 Let's take a break" },
+  };
+
+  function ensureGentleUI() {
+    let el = document.getElementById("x2t-gentle");
+    if (el) return el;
+    const style = document.createElement("style");
+    style.textContent = `
+      #x2t-gentle {
+        position: fixed; left: 50%; bottom: 22px;
+        transform: translateX(-50%) translateY(8px);
+        z-index: 2147483000; display: flex; align-items: center; gap: 10px;
+        padding: 9px 14px; border-radius: 999px;
+        background: linear-gradient(135deg, #1DA1F2, #0d8bdb);
+        color: #fff; font-size: 12.5px; font-weight: 600;
+        box-shadow: 0 8px 24px rgba(15,20,25,.25);
+        opacity: 0; transition: opacity .25s ease, transform .25s ease;
+        pointer-events: none; font-family: inherit;
+      }
+      #x2t-gentle.on { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+      #x2t-gentle button {
+        border: none; background: rgba(255,255,255,.22); color: #fff;
+        border-radius: 999px; padding: 3px 10px; font-size: 11px;
+        font-weight: 700; cursor: pointer;
+      }
+      #x2t-gentle button:hover { background: rgba(255,255,255,.34); }
+    `;
+    document.head.appendChild(style);
+    el = document.createElement("div");
+    el.id = "x2t-gentle";
+    el.setAttribute("aria-live", "polite");
+    el.innerHTML = `<span class="msg"></span><button type="button"></button>`;
+    el.querySelector("button").addEventListener("click", gentleStop);
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function showGentleBanner(state) {
+    const m = GENTLE_MSG[gentleLang()] || GENTLE_MSG.en;
+    const el = ensureGentleUI();
+    el.querySelector(".msg").textContent = m[state] || m.searching;
+    el.querySelector("button").textContent = m.stop;
+    // 探索中のみ停止ボタン、完了メッセージでは隠す
+    el.querySelector("button").style.display = state === "searching" ? "" : "none";
+    el.classList.add("on");
+  }
+  function hideGentleBanner() {
+    const el = document.getElementById("x2t-gentle");
+    if (el) el.classList.remove("on");
+  }
+  function clearGentleTimer() {
+    if (gentle.timer) { clearTimeout(gentle.timer); gentle.timer = null; }
+  }
+
+  function gentleStep() {
+    if (!gentle.active) return;
+    const sc = document.scrollingElement || document.documentElement;
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const before = sc.scrollTop;
+    const step = Math.round((window.innerHeight || 800) * 0.85);
+    sc.scrollTo({ top: before + step, behavior: reduce ? "auto" : "smooth" });
+    gentle.timer = setTimeout(() => {
+      if (gentle.active && Math.abs(sc.scrollTop - before) < 4) sc.scrollTop = before + step;
+    }, 450);
+    gentle.nudgesLeft--;
+    if (gentle.nudgesLeft > 0) {
+      gentle.timer = setTimeout(gentleStep, 1600);
+    } else {
+      gentle.timer = setTimeout(() => gentleEnd(false), 1800);
+    }
+  }
+
+  function gentleStart() {
+    gentle.active = true;
+    gentle.nudgesLeft = GENTLE_NUDGES;
+    showGentleBanner("searching");
+    gentleStep();
+  }
+
+  function gentleStop() {
+    clearGentleTimer();
+    gentle.active = false;
+    gentle.hiddenRun = 0;
+    gentle.lastEnd = Date.now();
+    hideGentleBanner();
+  }
+
+  function gentleEnd(foundAnimal) {
+    if (!gentle.active) return;
+    clearGentleTimer();
+    gentle.active = false;
+    gentle.hiddenRun = 0;
+    gentle.lastEnd = Date.now();
+    showGentleBanner(foundAnimal ? "found" : "rest");
+    gentle.timer = setTimeout(hideGentleBanner, foundAnimal ? 2200 : 2600);
+  }
+
+  // 各記事の初回判定だけを数え、悪い投稿が続いたら「優しいモード」を起動する
+  function gentleMark(art, hide) {
+    if (!settings.gentle) return;
+    if (gentle.seen.has(art)) return;
+    gentle.seen.add(art);
+    if (hide) {
+      gentle.hiddenRun++;
+      if (!gentle.active && gentle.hiddenRun >= GENTLE_THRESHOLD &&
+          Date.now() - gentle.lastEnd > GENTLE_COOLDOWN) {
+        gentleStart();
+      }
+    } else {
+      gentle.hiddenRun = 0;
+      if (gentle.active) gentleEnd(x2tIsAnimal(art.textContent || ""));
     }
   }
 
@@ -213,7 +353,7 @@
 
   const BOOL_KEYS = [
     "filterOn", "hideGov", "hideNews", "hideFin", "hideInsult",
-    "hideDisaster", "hideFood", "hideAiHype", "art",
+    "hideDisaster", "hideFood", "hideAiHype", "art", "gentle",
   ];
 
   let currentStrength = "standard";
@@ -238,6 +378,7 @@
         }
       }
     }
+    if (!settings.gentle && gentle.active) gentleStop();
     if (changed) refilter();
   }
 
@@ -245,9 +386,22 @@
     return currentStrength;
   }
 
+  // デバッグ／自己診断用の状態スナップショット
+  function getState() {
+    return {
+      strength: currentStrength,
+      gentle: {
+        on: settings.gentle,
+        active: gentle.active,
+        hiddenRun: gentle.hiddenRun,
+        nudgesLeft: gentle.nudgesLeft,
+      },
+    };
+  }
+
   function refreshHandle() {
     myHandle = getMyHandle();
   }
 
-  globalThis.X2TFilter = { configure, refreshHandle, apply, refilter, restore, isActive, getStrength };
+  globalThis.X2TFilter = { configure, refreshHandle, apply, refilter, restore, isActive, getStrength, getState };
 })();

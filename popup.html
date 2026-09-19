@@ -196,6 +196,19 @@
     content: "🔕";
     font-size: 14px;
   }
+  .row.special.gentle {
+    background: linear-gradient(135deg, rgba(29,161,242,.18), rgba(34,197,94,.16));
+    border-color: rgba(34,197,94,.5);
+  }
+  .row.special.gentle .gentle-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .row.special.gentle .gentle-inner::before {
+    content: "🐦";
+    font-size: 14px;
+  }
   .switch { position: relative; width: 44px; height: 24px; flex: none; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
@@ -358,6 +371,10 @@
       <div class="timer-status" id="timerStatus"></div>
       <div class="timer-note" data-i18n="timerNote"></div>
     </div>
+    <label class="row special gentle">
+      <span class="gentle-inner" data-i18n="gentleLabel"></span>
+      <span class="switch"><input type="checkbox" id="gentle"><span class="slider"></span></span>
+    </label>
     <label class="row special">
       <span class="special-inner" data-i18n="artLabel"></span>
       <span class="switch"><input type="checkbox" id="art"><span class="slider"></span></span>
@@ -471,7 +488,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.9.0</span>
+    <span class="ver">v1.10.0</span>
   </div>
   <script src="filters.js"></script>
   <script src="i18n.js"></script>

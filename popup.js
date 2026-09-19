@@ -3,6 +3,7 @@ const langButtons = document.querySelectorAll("#langSeg button");
 const filterToggle = document.getElementById("filter");
 const artToggle = document.getElementById("art");
 const busyToggle = document.getElementById("busy");
+const gentleToggle = document.getElementById("gentle");
 const disasterToggle = document.getElementById("hideDisaster");
 const foodToggle = document.getElementById("hideFood");
 const aiHypeToggle = document.getElementById("hideAiHype");
@@ -126,14 +127,15 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tStrength", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
-  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tStrength, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tGentle", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tStrength", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tGentle, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tStrength, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     setStrength(x2tStrength || "standard");
     filterToggle.checked = !!x2tFilter;
     artToggle.checked = !!x2tArt;
     busyToggle.checked = !!x2tBusy;
+    gentleToggle.checked = x2tGentle !== false;
     disasterToggle.checked = x2tHideDisaster !== false;
     foodToggle.checked = x2tHideFood !== false;
     aiHypeToggle.checked = x2tHideAiHype !== false;
@@ -202,6 +204,10 @@ artToggle.addEventListener("change", () => {
 
 busyToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tBusy: busyToggle.checked });
+});
+
+gentleToggle.addEventListener("change", () => {
+  chrome.storage.local.set({ x2tGentle: gentleToggle.checked });
 });
 
 disasterToggle.addEventListener("change", () => {

@@ -589,7 +589,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); fixTitle(); if (globalThis.X2TFilter) X2TFilter.refreshHandle(); }, 3000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tStrength"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tStrength }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tArt", "x2tBusy", "x2tGentle", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tStrength"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tArt, x2tBusy, x2tGentle, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tStrength }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -603,6 +603,7 @@
       X2TFilter.configure({
         filterOn: !!x2tFilter,
         art: !!x2tArt,
+        gentle: x2tGentle !== false,
         strength: x2tStrength || "standard",
         hideGov: !!x2tHideGov,
         hideNews: !!x2tHideNews,
@@ -657,6 +658,9 @@
     if (changes.x2tBusy) {
       currentBusy = !!changes.x2tBusy.newValue;
       applyBusy();
+    }
+    if (changes.x2tGentle && globalThis.X2TFilter) {
+      X2TFilter.configure({ gentle: changes.x2tGentle.newValue !== false });
     }
     if (changes.x2tCustom) {
       if (changes.x2tCustom.newValue && changes.x2tCustom.newValue.top) customColors = changes.x2tCustom.newValue;

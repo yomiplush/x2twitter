@@ -4,7 +4,7 @@
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a fully-local negative-news / AI-alarmist word filter. A fan-made mod.
 > **v1.8** adds inverted **"hide" toggles** (disaster & rescue info / food & gourmet) and an **AI-alarmist filter** — all running locally with no API, no dependencies, and no data leaving your browser.
 
-![version](https://img.shields.io/badge/version-1.9.0-blue)
+![version](https://img.shields.io/badge/version-1.10.0-blue)
 
 ---
 
@@ -68,6 +68,15 @@ Every filter decision is made **inside your browser** with word lists and regula
 - **Self-check** (`selfcheck.js`) scores the filter on built-in Japanese/English sample posts using the *same* predicates as the live filter, so tuning can't silently drift
 - Add or remove words by editing `filters.js` (`DISASTER_SIGNAL`, `FOOD_SIGNAL`, `AI_HYPE_SIGNAL`, etc.)
 
+### 8. Gentle mode — anti-doomscroll 🐦
+When the algorithm feeds you a run of bad news, **Gentle mode** skips it for you: after a configurable run of hidden posts it gently advances the feed until **gentle content (animals / pets)** reaches you, so you don't have to keep doomscrolling.
+
+- Triggers after **6 consecutive hidden posts**, then advances in up to **4 small steps** (with a cooldown) until a visible post appears
+- Prefers **animal / pet posts** — when it lands on one it says so ("🐦 found a gentle post")
+- A soft pill at the bottom shows what is happening and has a **Stop** button; disabling the toggle cancels it immediately
+- Respects `prefers-reduced-motion` (instant scroll instead of smooth)
+- Toggle: **Gentle mode (anti-doomscroll)** at the top of the popup (default ON)
+
 ---
 
 ## 📦 Installation (Chrome Extension)
@@ -87,6 +96,11 @@ Every filter decision is made **inside your browser** with word lists and regula
 ---
 
 ## 🎛️ Usage
+
+### 🐦 Gentle mode (anti-doomscroll)
+Click the extension icon → **Gentle mode** (top, default ON)
+- If bad news comes in a run, the feed is gently advanced until gentle (animal/pet) content appears — no more endless doomscrolling
+- A small pill at the bottom explains what's happening; press **Stop** (or turn the toggle off) anytime
 
 ### 🎨 Art Focus Mode (special toggle · top of the popup)
 Click the extension icon → turn on **Art Focus Mode** (top) to focus the timeline on **text-light image posts with likes/RTs**
