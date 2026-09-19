@@ -4,7 +4,7 @@
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a fully-local negative-news / AI-alarmist word filter. A fan-made mod.
 > **v1.8** adds inverted **"hide" toggles** (disaster & rescue info / food & gourmet) and an **AI-alarmist filter** — all running locally with no API, no dependencies, and no data leaving your browser.
 
-![version](https://img.shields.io/badge/version-1.8.2-blue)
+![version](https://img.shields.io/badge/version-1.8.3-blue)
 
 ---
 
@@ -35,7 +35,7 @@
 - **Light**: old-Twitter style light blue gradient
 - **Dark**: old-Twitter dark navy gradient
 - **Custom**: freely customize background colors (top/bottom) and the bird color
-- **Lazy floating birds** that drift and bob with a gentle wingbeat, plus **slowly flying birds** that cross the margins with banking turns and altitude sway (both toggleable, and disabled under `prefers-reduced-motion`)
+- **Lazy floating birds** that drift and bob with a gentle wingbeat in the margins (toggleable, and disabled under `prefers-reduced-motion`)
 
 ### 6. Negative-news filter 🛡️
 When the toggle is ON, the following are hidden from the **home timeline** (`/home`) — the filter is **not applied on search results**:
@@ -134,7 +134,7 @@ Turn on **Hide AI alarmists** to hide sensational "AI scaremonger" posts — AGI
 
 ### Effects toggles
 - **Splash**: the blue-bird splash on page load (default ON)
-- **Birds**: floating/flying birds in the margins (default ON)
+- **Birds**: floating birds in the margins (default ON)
 
 ### Account hiding 🏛️📰
 - **Hide gov & politician accounts**: completely hide government agencies, heads of state, and politicians worldwide (@POTUS, @kantei, @10DowningStreet, etc.)
