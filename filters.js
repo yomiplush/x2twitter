@@ -189,7 +189,7 @@ const STRONG_EN = [
   "hit and run", "drunk driving", "drunk driver", "reckless driving", "road rage",
   "mass stabbing", "random attack", "mass killing"
 ];
-const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "非難殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく", "ワクチン", "露", "仏", "韓国"];
+const WEAK_JP = ["論争", "議論", "意見対立", "クレーム", "苦情", "トラブル", "もめ事", "もめごと", "険悪", "ギスギス", "騒動", "不安", "心配", "ストレス", "パニック", "恐慌", "買い占め", "賛否", "賛否両論", "物議", "物議を醸す", "波紋を呼ぶ", "批判殺到", "批判が殺到", "非難殺到", "非難が殺到", "反発", "バックラッシュ", "火種", "いざこざ", "ムカつく", "イライラ", "うんざり", "最悪", "呆れた", "嫌い", "怒り", "絶望", "気持ち悪い", "嫌悪", "ゲンナリ", "ドン引き", "モヤモヤ", "ざわつく", "ワクチン", "露", "仏", "韓国"];
 const WEAK_EN = ["controversy", "controversial", "dispute", "disputes", "debate", "debates", "complaint", "complaints", "trouble", "friction", "tension", "tensions", "stressed", "stress", "worried", "worry", "panic", "outrage", "uproar", "outcry", "furor", "backlash", "alarm", "annoyed", "annoying", "frustrated", "frustrating", "angry", "mad", "fed up", "sick of", "tired of", "gross", "disgusted", "worst", "despair", "hopeless", "disagreement", "disagreements", "strained", "tense relations", "anxiety", "anxious", "panic buying", "hoarding", "for and against", "mixed reactions", "mixed opinions", "stirring controversy", "causing a stir", "caused a stir", "flood of criticism", "criticized heavily", "squabble", "squabbles", "appalled", "appalling", "dislike", "hate", "anger", "cringe", "cringed", "put off", "uneasy", "unease", "unsettled", "adams", "madison", "monroe", "jackson", "van buren", "harrison", "taylor", "fillmore", "pierce", "buchanan", "grant", "hayes", "garfield", "arthur", "cleveland", "mckinley", "taft", "wilson", "harding", "coolidge", "hoover", "ford", "carter", "truman", "eisenhower", "johnson", "conflict", "conflicts", "fight", "fights", "fighting", "strike", "strikes", "fire", "fires", "shelter", "fake", "flu", "vaccine", "vaccines", "vaccination", "yen", "south korea"];
 const JAPAN_SUBJECT_G = new RegExp("(?:日本では|日本人は|日本人が|日本は|日本人|この国は|この国では|japanese people|japanese are|japanese society|japanese government|in japan|japan is|this country)", "gi");
 
@@ -330,3 +330,46 @@ const INSULT_EN = [
   "eat shit", "fool", "dipshit", "shithead", "jackass"
 ];
 const INSULT_STRONG = new RegExp(`(?:${INSULT_JP.join("|")})|(?:${INSULT_EN.map(EN).join("|")})`, "i");
+
+// ===== 動物・ペット保護（災害/グルメ判定の誤爆を防ぐ）=====
+// 「rescue kittens」「保護犬」「猫のごはん」などを、災害支援やグルメと誤判定しない。
+const PET_SAFE = /(?:動物|動物園|保護犬|保護猫|保護活動|野良猫|野良犬|子犬|子猫|ペット|里親|譲渡会|猫カフェ|アニマル|カワウソ|フェレット|モルモット|ハリネズミ|kitten|kittens|puppy|puppies|bunny|rabbit|hamster|animal|animals|dog|dogs|cat|cats|pet|pets|foster|adoption|aquarium|panda|wildlife)/i;
+
+// ===== フィルター強度（弱シグナルの必要ヒット数）=====
+// 強シグナルは常に1ヒットで非表示。弱シグナル（曖昧語）だけを強度で調整する。
+//   weak=3 / standard=2 / strong=1 ヒットで非表示
+const X2T_STRENGTH_HITS = { weak: 3, standard: 2, strong: 1 };
+let X2T_WEAK_THRESHOLD = X2T_STRENGTH_HITS.standard;
+
+function x2tSetStrength(level) {
+  X2T_WEAK_THRESHOLD = X2T_STRENGTH_HITS[level] || X2T_STRENGTH_HITS.standard;
+}
+
+// ===== 純粋な判定ロジック（DOM非依存）=====
+// filter.js（実フィルター）と selfcheck.js（自己診断）で共有する。
+// 日本語・英語の両方に対応し、外部APIは使わない。
+function x2tCountWeakHits(text) {
+  NEGATIVE_WEAK_G.lastIndex = 0;
+  let hits = 0;
+  const need = X2T_WEAK_THRESHOLD;
+  while (hits < need && NEGATIVE_WEAK_G.exec(text)) hits++;
+  // 「日本を主語にした批判」は、批判ワード1つでも追加の1ヒットとして扱う
+  if (hits >= 1) {
+    JAPAN_SUBJECT_G.lastIndex = 0;
+    if (JAPAN_SUBJECT_G.test(text)) hits += 1;
+  }
+  return hits;
+}
+
+// テキストを各カテゴリへ分類する（完全ローカル）
+function x2tCategories(text) {
+  const t = text || "";
+  const pet = PET_SAFE.test(t);
+  return {
+    negative: !NEGATIVE_EXCEPT.test(t) && (NEGATIVE_STRONG.test(t) || x2tCountWeakHits(t) >= X2T_WEAK_THRESHOLD),
+    disaster: !pet && DISASTER_SIGNAL.test(t) && !DISASTER_EMOTIONAL_BLOCK.test(t),
+    gourmet: !pet && FOOD_SIGNAL.test(t),
+    aiHype: AI_HYPE_SIGNAL.test(t),
+    insult: INSULT_STRONG.test(t),
+  };
+}

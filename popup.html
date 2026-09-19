@@ -120,6 +120,29 @@
     outline: none;
   }
   .url-row input[type="text"]:focus { border-color: var(--accent); }
+  .diag { margin-top: 10px; }
+  .diag button {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 9px 0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .diag button:hover { border-color: var(--accent); color: var(--accent); }
+  .diag-result {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-strong);
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .diag-note { margin-top: 4px; font-size: 10px; color: var(--text-dim); line-height: 1.5; }
   .preset-row { display: flex; gap: 8px; margin-top: 10px; }
   .preset {
     width: 34px;
@@ -418,6 +441,19 @@
       <span data-i18n="hideInsultLabel"></span>
       <span class="switch"><input type="checkbox" id="hideInsult"><span class="slider"></span></span>
     </label>
+    <div class="divider"></div>
+    <div class="label" data-i18n="strengthLabel"></div>
+    <div class="seg" id="strengthSeg">
+      <button data-strength="weak" data-i18n="strengthWeak"></button>
+      <button data-strength="standard" data-i18n="strengthStandard"></button>
+      <button data-strength="strong" data-i18n="strengthStrong"></button>
+    </div>
+    <div class="diag">
+      <button id="diagRun" data-i18n="diagRun"></button>
+      <div class="diag-result" id="diagResult"></div>
+      <div class="diag-note" data-i18n="diagNote"></div>
+    </div>
+    <div class="divider"></div>
     <label class="row">
       <span data-i18n="splashLabel"></span>
       <span class="switch"><input type="checkbox" id="splash"><span class="slider"></span></span>
@@ -435,9 +471,11 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.8.3</span>
+    <span class="ver">v1.9.0</span>
   </div>
+  <script src="filters.js"></script>
   <script src="i18n.js"></script>
+  <script src="selfcheck.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a fully-local negative-news / AI-alarmist word filter. A fan-made mod.
 > **v1.8** adds inverted **"hide" toggles** (disaster & rescue info / food & gourmet) and an **AI-alarmist filter** — all running locally with no API, no dependencies, and no data leaving your browser.
 
-![version](https://img.shields.io/badge/version-1.8.3-blue)
+![version](https://img.shields.io/badge/version-1.9.0-blue)
 
 ---
 
@@ -38,7 +38,7 @@
 - **Lazy floating birds** that drift and bob with a gentle wingbeat in the margins (toggleable, and disabled under `prefers-reduced-motion`)
 
 ### 6. Negative-news filter 🛡️
-When the toggle is ON, the following are hidden from the **home timeline** (`/home`) — the filter is **not applied on search results**:
+When the toggle is ON, the following are hidden across **every timeline** (For You / Following / search / profiles / lists / bookmarks / explore / notifications):
   - **Politics (Japan & worldwide)** (elections, parliament, leaders, political terms, etc.)
   - **Conspiracy theories** (vaccines, disinformation, QAnon, etc.)
   - **War & conflict** (Ukraine, Gaza, missiles, etc.)
@@ -60,11 +60,12 @@ When the toggle is ON, the following are hidden from the **home timeline** (`/ho
 - **Multilingual**: all Japanese filter words are translated into English; detection works in both Japanese and English
 - **Kindness**: "safe / uninjured / rescued" type posts are never hidden; SOS and venting posts are intentionally exempt
 
-### 7. Zero-cost & fully local 🔒
+### 7. Zero-cost, fully local & self-checking 🔒
 Every filter decision is made **inside your browser** with word lists and regular expressions.
 
 - **No API, no account, no key** — nothing is sent anywhere and nothing costs money
 - Works offline and never rate-limits
+- **Self-check** (`selfcheck.js`) scores the filter on built-in Japanese/English sample posts using the *same* predicates as the live filter, so tuning can't silently drift
 - Add or remove words by editing `filters.js` (`DISASTER_SIGNAL`, `FOOD_SIGNAL`, `AI_HYPE_SIGNAL`, etc.)
 
 ---
@@ -110,10 +111,10 @@ Click the extension icon (🐦) → choose **Auto / Light / Dark / Custom** unde
 
 ### Negative-news filter
 Click the extension icon → toggle **Hide negative news**
-- ON: matching tweets are instantly hidden on the **home timeline** (auto-follows new posts as you scroll)
+- ON: matching tweets are instantly hidden on **every timeline** (auto-follows new posts as you scroll)
 - OFF: everything shows again
 - **Your own account's posts are completely exempt** (they never get hidden, even with the filter ON)
-- The filter is **not applied on search results** (`/search`) so search results never disappear
+- Works on **For You, Following, search, profiles, lists, bookmarks, explore and notifications**; on a status page the focal (parent) tweet is kept so the page stays usable
 
 ### Don't show disaster & rescue info
 Turn on **Don't show disaster & rescue info** to hide **earthquakes, evacuations, rescue, safety checks, aid, donations, etc.** from the timeline
@@ -131,6 +132,12 @@ Turn on **Don't show food & gourmet** to hide food posts (meals, cooking, ramen,
 Turn on **Hide AI alarmists** to hide sensational "AI scaremonger" posts — AGI-doom, "humanity ends", "singularity is here", "AI will take every job", and similar unfounded panic/hype
 - Word-list based (no API): matched via `AI_HYPE_SIGNAL` in `filters.js`, limited to alarmist/doom phrasing rather than the word "AI" itself
 - Works for both Japanese and English posts
+
+### Filter strength & self-check 🎚️🧪
+Click the extension icon → **Filter strength** to pick **Weak / Standard / Strong**
+- Chooses how many *weak* (ambiguous) signals are needed to hide a post; **strong signals always hide on one hit**
+- Weak = fewer false positives (may miss borderline posts) / Strong = more aggressive
+- **Self-check (Japanese / English)** runs ~26 built-in sample posts through the exact same decision logic and reports the score, so you can verify the setting before trusting it. No API, no network
 
 ### Effects toggles
 - **Splash**: the blue-bird splash on page load (default ON)
@@ -156,7 +163,7 @@ All settings are saved automatically and persist across sessions.
 | Target sites | `*.x.com/*`, `*.twitter.com/*` |
 | Permissions | `storage`, `alarms`, `offscreen` (no network access at all) |
 | Runtime | None (no dependencies, plain JS) |
-| Files | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `background.js` / `offscreen.html` / `offscreen.js` / `icons/` |
+| Files | `manifest.json` / `filters.js` / `filter.js` / `selfcheck.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `background.js` / `offscreen.html` / `offscreen.js` / `icons/` |
 
 ### Tech notes
 - **Text rewriting**: a `MutationObserver` follows the SPA's dynamic content. Inputs, textareas, and contenteditable elements are left untouched so composing tweets never breaks
@@ -173,7 +180,9 @@ All settings are saved automatically and persist across sessions.
 x2twitter/
 ├── manifest.json      # Extension definition (Manifest V3)
 ├── background.js      # Posting-timer alarm + chime playback
-├── filters.js         # Filter word definitions (strong/weak signals, exceptions, regexes, account lists)
+├── filters.js         # Filter word definitions + pure predicates (x2tCategories)
+├── filter.js          # Filtering engine (DOM apply, page scope, strength)
+├── selfcheck.js       # Built-in self-check with Japanese/English sample posts
 ├── i18n.js            # UI text (Japanese/English) and language detection
 ├── content.js         # Main logic (rewrite, effects, filter application)
 ├── popup.html         # Extension popup UI

@@ -11,6 +11,9 @@ const hideNewsToggle = document.getElementById("hideNews");
 const hideTrendsToggle = document.getElementById("hideTrends");
 const hideFinToggle = document.getElementById("hideFin");
 const hideInsultToggle = document.getElementById("hideInsult");
+const strengthButtons = document.querySelectorAll("#strengthSeg button");
+const diagRun = document.getElementById("diagRun");
+const diagResult = document.getElementById("diagResult");
 const splashToggle = document.getElementById("splash");
 const birdsToggle = document.getElementById("birds");
 const customColors = document.getElementById("customColors");
@@ -31,6 +34,8 @@ const DEFAULT_CUSTOM = { top: "#C0DEED", bottom: "#8EC5E8", accent: "#1DA1F2" };
 const TIMER_ALARM = "x2tPostTimer";
 
 let currentLang = "ja";
+let currentStrength = "standard";
+let lastDiag = null;
 let timerInterval = null;
 
 function fmt(ms) {
@@ -94,6 +99,24 @@ function render(lang) {
     el.title = x2tText(lang, el.dataset.i18nTitle);
   });
   for (const b of langButtons) b.classList.toggle("active", b.dataset.lang === lang);
+  renderDiag(lastDiag);
+}
+
+function setStrength(level) {
+  currentStrength = level || "standard";
+  for (const b of strengthButtons) b.classList.toggle("active", b.dataset.strength === currentStrength);
+}
+
+function renderDiag(res) {
+  lastDiag = res || null;
+  if (!res) { diagResult.textContent = ""; return; }
+  const pct = Math.round(res.accuracy * 100);
+  let txt = x2tText(currentLang, res.failed === 0 ? "diagPass" : "diagFail")
+    .replace("{p}", res.passed).replace("{t}", res.total).replace("{pct}", pct);
+  if (res.failed > 0) {
+    txt += " — " + res.results.filter(r => !r.ok).map(r => r.id).join(", ");
+  }
+  diagResult.textContent = txt;
 }
 
 function saveCustom() {
@@ -103,10 +126,11 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
-  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tStrength", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tStrength, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
+    setStrength(x2tStrength || "standard");
     filterToggle.checked = !!x2tFilter;
     artToggle.checked = !!x2tArt;
     busyToggle.checked = !!x2tBusy;
@@ -211,6 +235,35 @@ hideFinToggle.addEventListener("change", () => {
 hideInsultToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tHideInsult: hideInsultToggle.checked });
 });
+
+for (const b of strengthButtons) {
+  b.addEventListener("click", () => {
+    chrome.storage.local.set({ x2tStrength: b.dataset.strength });
+    setStrength(b.dataset.strength);
+    if (lastDiag) runSelfCheck();
+  });
+}
+
+function currentSettings() {
+  return {
+    filterOn: filterToggle.checked,
+    hideInsult: hideInsultToggle.checked,
+    hideDisaster: disasterToggle.checked,
+    hideFood: foodToggle.checked,
+    hideAiHype: aiHypeToggle.checked,
+    hideGov: hideGovToggle.checked,
+    hideNews: hideNewsToggle.checked,
+    hideFin: hideFinToggle.checked,
+    art: artToggle.checked,
+  };
+}
+
+function runSelfCheck() {
+  if (typeof X2TSelfCheck === "undefined") return;
+  renderDiag(X2TSelfCheck.run(currentSettings(), currentStrength));
+}
+
+diagRun.addEventListener("click", runSelfCheck);
 
 splashToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tSplash: splashToggle.checked });
