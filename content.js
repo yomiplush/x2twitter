@@ -270,6 +270,28 @@
       }
 
       ::selection { background: rgba(29,161,242,.25); }
+
+      /* ===== ロゴの鳥：自然なアイドル（羽ばたき→滑空→ゆらぎ）===== */
+      .x2t-logo-bird svg {
+        transform-origin: 50% 62%;
+        animation: x2t-logo-idle 4s ease-in-out infinite;
+        will-change: transform;
+      }
+      @keyframes x2t-logo-idle {
+        0%   { transform: translateY(0) rotate(0deg) scaleY(1); }
+        4%   { transform: translateY(-1.2%) rotate(-.4deg) scaleY(.86); }
+        8%   { transform: translateY(.4%) rotate(.3deg) scaleY(1.07); }
+        12%  { transform: translateY(-1%) rotate(-.3deg) scaleY(.87); }
+        16%  { transform: translateY(.3%) rotate(.2deg) scaleY(1.05); }
+        21%  { transform: translateY(-.8%) rotate(-.2deg) scaleY(.9); }
+        27%  { transform: translateY(0) rotate(0deg) scaleY(1); }
+        55%  { transform: translateY(-2%) rotate(-1.2deg) scaleY(1); }
+        80%  { transform: translateY(1%) rotate(.8deg) scaleY(1); }
+        100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .x2t-logo-bird svg { animation: none !important; }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -294,6 +316,7 @@
     if (!logoBirdEl) {
       logoBirdEl = document.createElement("div");
       logoBirdEl.setAttribute("aria-hidden", "true");
+      logoBirdEl.className = "x2t-logo-bird";
       logoBirdEl.style.cssText = "position:fixed;z-index:2147483000;pointer-events:none;display:flex;align-items:center;justify-content:center;";
       logoBirdEl.innerHTML = `<svg viewBox="0 0 24 24" style="width:58%;height:58%;display:block;filter:drop-shadow(0 2px 6px rgba(29,161,242,.35));"><path fill="var(--x2t-bird-color, #1DA1F2)" d="${BIRD_PATH}"/></svg>`;
       document.body.appendChild(logoBirdEl);
@@ -606,21 +629,56 @@
           position: fixed; inset: 0; z-index: -1;
           pointer-events: none; overflow: hidden;
         }
-        #x2t-birds .bird { position: absolute; opacity: .5; filter: drop-shadow(0 2px 6px rgba(29,161,242,.18)); }
-        #x2t-birds .b1 { left: 6%;  top: 16%; width: 44px; height: 44px; animation: x2t-float 7s ease-in-out infinite alternate; }
-        #x2t-birds .b2 { left: 88%; top: 34%; width: 32px; height: 32px; animation: x2t-float 9s ease-in-out 1.2s infinite alternate; }
-        #x2t-birds .b3 { left: 4%;  top: 70%; width: 30px; height: 30px; animation: x2t-float 8s ease-in-out 2s infinite alternate; }
-        #x2t-birds .b4 { left: 89%; top: 78%; width: 38px; height: 38px; animation: x2t-float 10s ease-in-out .6s infinite alternate; }
-        #x2t-birds .f1 { left: -70px; top: 24%; width: 30px; height: 30px; opacity: .3; animation: x2t-fly 34s linear infinite; }
-        #x2t-birds .f2 { left: -70px; top: 64%; width: 24px; height: 24px; opacity: .24; animation: x2t-fly 46s linear 12s infinite; }
-        @keyframes x2t-float {
-          from { transform: translateY(0) rotate(-5deg); }
-          to   { transform: translateY(-22px) rotate(5deg); }
+        /* 位置・移動は .bird、羽ばたきは内側の svg で別レイヤーに分ける */
+        #x2t-birds .bird {
+          position: absolute;
+          filter: drop-shadow(0 2px 6px rgba(29,161,242,.18));
+          will-change: transform, opacity;
         }
+        #x2t-birds .bird svg {
+          display: block; width: 100%; height: 100%;
+          transform-origin: 50% 62%;
+          will-change: transform;
+          animation: x2t-flap var(--flap, 3.4s) ease-in-out var(--flapDelay, 0s) infinite;
+        }
+        /* 羽ばたき（数回バタついて、あとは滑空） */
+        @keyframes x2t-flap {
+          0%    { transform: scaleY(1); }
+          3%    { transform: scaleY(.84); }
+          6.5%  { transform: scaleY(1.08); }
+          10%   { transform: scaleY(.85); }
+          13.5% { transform: scaleY(1.06); }
+          17%   { transform: scaleY(.88); }
+          21%   { transform: scaleY(1); }
+          100%  { transform: scaleY(1); }
+        }
+        /* 浮遊：ゆっくり漂い、わずかに傾く */
+        @keyframes x2t-float {
+          0%, 100% { transform: translate3d(0, 0, 0) rotate(calc(var(--tilt, 4deg) * -1)); }
+          28%      { transform: translate3d(var(--sway, 3px), calc(var(--bob, 16px) * -1), 0) rotate(var(--tilt, 4deg)); }
+          62%      { transform: translate3d(calc(var(--sway, 3px) * -0.5), calc(var(--bob, 16px) * -0.35), 0) rotate(calc(var(--tilt, 4deg) * 0.15)); }
+          82%      { transform: translate3d(calc(var(--sway, 3px) * 0.6), calc(var(--bob, 16px) * -0.7), 0) rotate(calc(var(--tilt, 4deg) * 0.7)); }
+        }
+        /* 飛翔：画面を横切り、上下にゆらぎ、端でフェード */
         @keyframes x2t-fly {
-          0%   { transform: translateX(0) translateY(0) rotate(-8deg); }
-          50%  { transform: translateX(52vw) translateY(-26px) rotate(2deg); }
-          100% { transform: translateX(105vw) translateY(0) rotate(8deg); }
+          0%   { transform: translate3d(0, 0, 0) rotate(-7deg); opacity: 0; }
+          7%   { opacity: var(--flyop, .28); }
+          35%  { transform: translate3d(36vw, calc(var(--rise, -22px) * -1), 0) rotate(-1deg); }
+          68%  { transform: translate3d(72vw, calc(var(--rise, -22px) * 0.4), 0) rotate(3deg); }
+          93%  { opacity: var(--flyop, .28); }
+          100% { transform: translate3d(106vw, var(--drop, 4px), 0) rotate(7deg); opacity: 0; }
+        }
+        /* 浮かぶ鳥（止まり木のイメージ） */
+        #x2t-birds .b1 { left: 6%;  top: 16%; width: 44px; height: 44px; opacity: .5;  --bob: 20px; --sway: 4px; --tilt: 5deg; --flap: 4.2s; --flapDelay: .3s; animation: x2t-float 7.5s  ease-in-out infinite; }
+        #x2t-birds .b2 { left: 88%; top: 34%; width: 32px; height: 32px; opacity: .46; --bob: 14px; --sway: 3px; --tilt: 4deg; --flap: 3.8s; --flapDelay: 1.4s; animation: x2t-float 9.5s  ease-in-out 1.1s infinite; }
+        #x2t-birds .b3 { left: 4%;  top: 70%; width: 30px; height: 30px; opacity: .44; --bob: 12px; --sway: 3px; --tilt: 6deg; --flap: 4.6s; --flapDelay: .8s;  animation: x2t-float 8.4s  ease-in-out 2s infinite; }
+        #x2t-birds .b4 { left: 89%; top: 78%; width: 38px; height: 38px; opacity: .48; --bob: 18px; --sway: 4px; --tilt: 5deg; --flap: 4s;   --flapDelay: 2.2s; animation: x2t-float 10.4s ease-in-out .5s infinite; }
+        /* 飛ぶ鳥（少しずつ高度・速度・大きさを変えて群れらしく） */
+        #x2t-birds .f1 { left: -70px; top: 24%; width: 30px; height: 30px; --flyop: .30; --rise: -26px; --drop: 6px; --flap: 1.6s; animation: x2t-fly 38s linear infinite; }
+        #x2t-birds .f2 { left: -70px; top: 64%; width: 24px; height: 24px; --flyop: .24; --rise: -18px; --drop: 4px; --flap: 1.3s; animation: x2t-fly 52s linear 14s infinite; }
+        #x2t-birds .f3 { left: -70px; top: 44%; width: 18px; height: 18px; --flyop: .18; --rise: -30px; --drop: 2px; --flap: 1.1s; animation: x2t-fly 64s linear 30s infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          #x2t-birds .bird, #x2t-birds .bird svg { animation: none !important; }
         }
       </style>
       <span class="bird b1">${bird}</span>
@@ -629,6 +687,7 @@
       <span class="bird b4">${bird}</span>
       <span class="bird f1">${bird}</span>
       <span class="bird f2">${bird}</span>
+      <span class="bird f3">${bird}</span>
     `;
     document.body.appendChild(c);
   }

@@ -4,7 +4,7 @@
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a fully-local negative-news / AI-alarmist word filter. A fan-made mod.
 > **v1.8** adds inverted **"hide" toggles** (disaster & rescue info / food & gourmet) and an **AI-alarmist filter** — all running locally with no API, no dependencies, and no data leaving your browser.
 
-![version](https://img.shields.io/badge/version-1.8.1-blue)
+![version](https://img.shields.io/badge/version-1.8.2-blue)
 
 ---
 
@@ -35,7 +35,7 @@
 - **Light**: old-Twitter style light blue gradient
 - **Dark**: old-Twitter dark navy gradient
 - **Custom**: freely customize background colors (top/bottom) and the bird color
-- "Lazy floating birds" and "slowly flying birds" drift in the margins as ambient effects (can be toggled)
+- **Lazy floating birds** that drift and bob with a gentle wingbeat, plus **slowly flying birds** that cross the margins with banking turns and altitude sway (both toggleable, and disabled under `prefers-reduced-motion`)
 
 ### 6. Negative-news filter 🛡️
 When the toggle is ON, the following are hidden from the **home timeline** (`/home`) — the filter is **not applied on search results**:
