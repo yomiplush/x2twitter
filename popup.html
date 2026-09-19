@@ -109,7 +109,7 @@
     cursor: pointer;
   }
   .url-row { margin-top: 8px; }
-  .url-row input[type="text"] {
+  .url-row input[type="text"], .url-row input[type="password"] {
     width: 100%;
     padding: 8px 10px;
     border-radius: 8px;
@@ -119,7 +119,17 @@
     font-size: 12px;
     outline: none;
   }
-  .url-row input[type="text"]:focus { border-color: var(--accent); }
+  .url-row input[type="text"]:focus, .url-row input[type="password"]:focus { border-color: var(--accent); }
+  .jev {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px 10px 10px;
+    margin-bottom: 10px;
+  }
+  .jev .row { margin: 0; }
+  .jev-status { font-size: 10.5px; font-weight: 600; color: var(--accent-strong); margin-top: 8px; }
+  .jev-note { font-size: 10px; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
   .preset-row { display: flex; gap: 8px; margin-top: 10px; }
   .preset {
     width: 34px;
@@ -388,12 +398,27 @@
     </label>
     <label class="row">
       <span data-i18n="disasterLabel"></span>
-      <span class="switch"><input type="checkbox" id="disaster"><span class="slider"></span></span>
+      <span class="switch"><input type="checkbox" id="hideDisaster"><span class="slider"></span></span>
     </label>
     <label class="row">
       <span data-i18n="foodLabel"></span>
-      <span class="switch"><input type="checkbox" id="food"><span class="slider"></span></span>
+      <span class="switch"><input type="checkbox" id="hideFood"><span class="slider"></span></span>
     </label>
+    <label class="row">
+      <span data-i18n="aiHypeLabel"></span>
+      <span class="switch"><input type="checkbox" id="hideAiHype"><span class="slider"></span></span>
+    </label>
+    <div class="jev">
+      <label class="row">
+        <span data-i18n="jevLabel"></span>
+        <span class="switch"><input type="checkbox" id="jevOn"><span class="slider"></span></span>
+      </label>
+      <div class="url-row">
+        <input type="password" id="jevKey" autocomplete="off" data-i18n-placeholder="jevKeyPlaceholder" placeholder="APIキーを入力">
+      </div>
+      <div class="jev-status" id="jevStatus"></div>
+      <div class="jev-note" data-i18n="jevNote"></div>
+    </div>
     <label class="row">
       <span data-i18n="hideGovLabel"></span>
       <span class="switch"><input type="checkbox" id="hideGov"><span class="slider"></span></span>
@@ -431,7 +456,7 @@
   </div>
   <div class="foot">
     <span data-i18n="footNote"></span>
-    <span class="ver">v1.7.2</span>
+    <span class="ver">v1.8.0</span>
   </div>
   <script src="i18n.js"></script>
   <script src="popup.js"></script>

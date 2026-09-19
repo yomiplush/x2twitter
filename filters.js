@@ -218,15 +218,24 @@ const JP_MEDIA_HANDLES = new Set([
 // 表示名（ディスプレイネーム）による補助判定（例: 「◯◯新聞」「◯◯新聞社」）
 const JP_MEDIA_NAME = /(?:新聞|新聞社|通信社|放送局|テレビ|NHK|毎日|朝日|読売|日経|産経|共同通信|時事通信|中日|東京新聞|北海道新聞|西日本新聞|中国新聞|神戸新聞|京都新聞|河北新報|信濃毎日|熊本日日|南日本新聞|沖縄タイムス|琉球新報)/;
 
-// ===== 災害・救難支援情報モード =====
-// 「災害・救難支援情報を見る」ON時に表示を許可する災害・救助・支援系キーワード
-const DISASTER_ALLOW = /(?:地震|余震|震度|震源地|マグニチュード|津波|避難|避難所|避難指示|警報|注意報|特別警報|大雨|洪水|土砂災害|被災地|被災|被害|救助|救助隊|救出|救難|救難支援|安否|安否確認|支援|支援物資|支援金|義援金|被災者支援|募金|ボランティア|ボランティア募集|停電|断水|復旧|復興|災害|熊本|避難場所|避難所開設|受け入れ|連絡先|相談窓口|拡散|拡散希望|共有|シェア|助けて|緊急|お知らせ|情報求む|地震速報|消防|自衛隊|ヘリコプター|earthquake|quake|aftershock|tsunami|evacuation|evacuate|shelter|warning|alert|epicenter|magnitude|flood|landslide|rescue|rescue team|first responders|relief|aid|donation|donate|supplies|volunteer|blackout|outage|recovery|disaster|emergency|urgent|help|share|damage|safety|helpline|hotline)/i;
+// ===== 災害支援情報を「見ない」モード =====
+// 「災害支援情報を見ない」ON時、およびJev候補抽出に使う災害・救助・支援系キーワード。
+// Jev（TypeSafe）が使える場合はこのシグナルを候補ゲート兼フォールバックとして使い、
+// 最終判定は content.js が Jev の確率で行う。
+const DISASTER_SIGNAL = /(?:地震|余震|震度|震源地|マグニチュード|津波|避難|避難所|避難指示|警報|注意報|特別警報|大雨|洪水|土砂災害|被災地|被災|被害|救助|救助隊|救出|救難|救難支援|安否|安否確認|支援|支援物資|支援金|義援金|被災者支援|募金|ボランティア|ボランティア募集|停電|断水|復旧|復興|災害|熊本|避難場所|避難所開設|受け入れ|連絡先|相談窓口|拡散|拡散希望|共有|シェア|助けて|緊急|お知らせ|情報求む|地震速報|消防|自衛隊|ヘリコプター|earthquake|quake|aftershock|tsunami|evacuation|evacuate|shelter|warning|alert|epicenter|magnitude|flood|landslide|rescue|rescue team|first responders|relief|aid|donation|donate|supplies|volunteer|blackout|outage|recovery|disaster|emergency|urgent|help|share|damage|safety|helpline|hotline)/i;
 // 感情をえぐるグラフィック表現（災害情報モードでも非表示を維持）
 const DISASTER_EMOTIONAL_BLOCK = /(?:死亡|死者|亡くなり|亡くなった|遺体|犠牲|重体|心肺停止|焼死|圧死|生き埋め|押し流さ|崩れ落ち|死体|遺族|訃報|血|絶望|death|deaths|dead|killed|killing|body|bodies|casualties|fatality|fatalities|trapped|buried|crushed|blood|remains|died|murder)/i;
 
-// ===== 食べ物・グルメモード =====
-// 「食べ物・グルメを見る」ON時に表示を許可する食べ物・食事系キーワード
-const FOOD_ALLOW = /(?:ご飯|ごはん|朝ごはん|昼ごはん|夜ごはん|朝食|昼食|夕食|食事|食べ物|食べもの|グルメ|料理|お料理|レシピ|クッキング|ラーメン|そば|うどん|寿司|すし|カレー|ピザ|ハンバーガー|ハンバーグ|パン|ケーキ|スイーツ|お菓子|デザート|アイス|飲み物|ドリンク|コーヒー|ジュース|カフェ|喫茶店|レストラン|居酒屋|焼肉|お好み焼き|たこ焼き|弁当|お弁当|パスタ|サラダ|スープ|味噌汁|おでん|鍋|定食|丼|天ぷら|刺身|焼き魚|焼き鳥|ステーキ|フルーツ|果物|野菜|卵|豆腐|チーズ|ヨーグルト|おいしい|美味しい|うまい|食べたい|お腹すいた|お腹がすいた|腹ペコ|空腹|満腹|もぐもぐ|ぱくぱく|food|meal|meals|delicious|yummy|tasty|cooking|recipe|recipes|restaurant|breakfast|lunch|dinner|snack|snacks|pizza|ramen|sushi|curry|cake|dessert|coffee|hungry|starving)/i;
+// ===== グルメ情報を「見ない」モード =====
+// 「グルメ情報を見ない」ON時、およびJev候補抽出に使う食べ物・食事系キーワード。
+// Jev（TypeSafe）が使える場合はこのシグナルを候補ゲート兼フォールバックとして使い、
+// 最終判定は content.js が Jev の確率で行う（食べ物を題材にした絵などを誤判定しない）。
+const FOOD_SIGNAL = /(?:ご飯|ごはん|朝ごはん|昼ごはん|夜ごはん|朝食|昼食|夕食|食事|食べ物|食べもの|グルメ|料理|お料理|レシピ|クッキング|ラーメン|そば|うどん|寿司|すし|カレー|ピザ|ハンバーガー|ハンバーグ|パン|ケーキ|スイーツ|お菓子|デザート|アイス|飲み物|ドリンク|コーヒー|ジュース|カフェ|喫茶店|レストラン|居酒屋|焼肉|お好み焼き|たこ焼き|弁当|お弁当|パスタ|サラダ|スープ|味噌汁|おでん|鍋|定食|丼|天ぷら|刺身|焼き魚|焼き鳥|ステーキ|フルーツ|果物|野菜|卵|豆腐|チーズ|ヨーグルト|おいしい|美味しい|うまい|食べたい|お腹すいた|お腹がすいた|腹ペコ|空腹|満腹|もぐもぐ|ぱくぱく|food|meal|meals|delicious|yummy|tasty|cooking|recipe|recipes|restaurant|breakfast|lunch|dinner|snack|snacks|pizza|ramen|sushi|curry|cake|dessert|coffee|hungry|starving)/i;
+
+// ===== AI驚き屋を「見ない」モード =====
+// AIの能力・脅威を誇張して不安や驚きを煽る投稿（AI驚き屋）の候補シグナル。
+// Jev が最終判断し、客観的なAIニュース・ツール紹介・作品・技術解説・冷静な議論は除外する。
+const AI_HYPE_SIGNAL = /(?:シンギュラリティ|特異点|技術的特異点|汎用人工知能|超知能|スーパーAI|\bASI\b|AIが人類|人類滅亡|人類は終わ|人類終了|AIに支配され|AIが支配|AIが仕事を奪|AIで失業|AI失業|AI大量失業|AIが全てを|AIの暴走|AI暴走|AIが自我|AIが意識|AIが覚醒|AIが反乱|ロボットが支配|AI兵器|AI戦争|AI終了|日本終了|世界終了|AIが人間を超|AIが人間を淘汰|AIが取って代わ|AIで世界が終|AIパニック|人工知能が人類|AIが進化しすぎ|AIの進化が止まらない|数年以内に人類|あと数年で人類|AIが全ての仕事|AIが全職業|AIが全人類|AIが人間の仕事|AIに置き換えられ|AI失業時代|AIによる大量失業|AIが人類を超える|AIが人間を支配|AIが地球を|AIが全知全能|AI神|AIが神に|人工知能の暴走|\bAGI\b|GPT-?[56]|singularity|superintelligence|super intelligence|AI takeover|AI apocalypse|AI doom|AI will take over|AI takes over|AI replacing humans|AI replacing jobs|AI job losses|AI uprising|robot uprising|killer robots|autonomous weapons|AI sentient|AI consciousness|AGI imminent|AGI achieved|AGI is here|end of humanity|human extinction|AI extinction|AI dominates|AI singularity|AI god|AI becomes god)/i;
 
 // ===== アカウント非表示モード =====
 // 「政府・政治家アカウントを隠す」/「ニュースアカウントを隠す」ON時に完全非表示にする @ハンドル一覧

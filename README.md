@@ -2,8 +2,9 @@
 
 > A Chrome extension that brings x.com back to the nostalgic "gentle Twitter".
 > It restores the blue bird as the tab icon and logo, rewrites every "X" into "Twitter 2", and bundles a startup splash, ambient background effects, and a negative-news filter. A fan-made mod.
+> **v1.8** adds a **Jev (TypeSafe) decision layer**: ambiguous posts are judged in context by a typed AI model instead of keyword matching alone.
 
-![version](https://img.shields.io/badge/version-1.7.2-blue)
+![version](https://img.shields.io/badge/version-1.8.0-blue)
 
 ---
 
@@ -59,6 +60,16 @@ When the toggle is ON, the following are hidden from the **home timeline** (`/ho
 - **Multilingual**: all Japanese filter words are translated into English; detection works in both Japanese and English
 - **Kindness**: "safe / uninjured / rescued" type posts are never hidden; SOS and venting posts are intentionally exempt
 
+### 7. Jev (TypeSafe) decision layer 🧠
+Keyword filters are fast but dumb. **Jev** is TypeSafe's System One model: it returns *typed, probabilistic judgments* (not chat text), so the extension can ask "is this post negative news? / disaster support? / food? / AI alarmism?" and combine the probabilities in code.
+
+- **Two-tier pipeline**: regex gives an instant provisional decision and acts as a candidate gate + offline fallback; Jev refines only posts that need semantic understanding
+- **Code owns policy**: Jev returns probabilities; `content.js` applies thresholds (≥0.6 hide, ≤0.4 show, in-between → regex tiebreak) and the user's toggles
+- Adds **no prompt/parse step** — answers are typed (`noul` 0–1), so no brittle text parsing
+- **Cached & batched**: identical posts are judged once; concurrency is capped; 429/529 are retried with exponential backoff; a per-session call budget prevents runaway usage
+- **Graceful degradation**: with no API key (or if a request fails) the extension falls back to regex and keeps working
+- Set your key in the popup (**Jev AI judgment**). It is stored only in `chrome.storage.local` and sent only to OpenRouter/TypeSafe when a post is judged
+
 ---
 
 ## 📦 Installation (Chrome Extension)
@@ -107,16 +118,22 @@ Click the extension icon → toggle **Hide negative news**
 - **Your own account's posts are completely exempt** (they never get hidden, even with the filter ON)
 - The filter is **not applied on search results** (`/search`) so search results never disappear
 
-### Show disaster & rescue info
-Click the extension icon → turn on **Show disaster & rescue info** to keep seeing **earthquakes, evacuations, rescue, safety checks, aid, donations, etc.** even with the filter ON
-- So you can share/RT rescue and aid info and help someone
-- However, **emotionally heavy expressions (deaths, bodies, critical conditions) stay hidden** to protect your mental health
+### Don't show disaster & rescue info
+Turn on **Don't show disaster & rescue info** to hide **earthquakes, evacuations, rescue, safety checks, aid, donations, etc.** from the timeline
+- This is a **"hide" toggle** (inverted from v1.7): ON means you do **not** want to see disaster/support posts
+- Emotionally heavy expressions (deaths, bodies, critical conditions) stay hidden as before
+- Jev distinguishes real support info from metaphors, drills, and preparedness posts that merely mention disasters
 
-### Show food & meals
-Click the extension icon → turn on **Show food & meals** to keep seeing food posts (meals, cooking, ramen, sweets, recipes, "I'm hungry", etc.) even with the filter ON
-- For people who are hungry, or who want to see food photos even if they have none
-- "I'm hungry" / "starving" voices are shown too (SOS consideration)
-- Posts containing emotionally heavy expressions (deaths, bodies, critical conditions) still stay hidden
+### Don't show food & gourmet
+Turn on **Don't show food & gourmet** to hide food posts (meals, cooking, ramen, sweets, recipes, "I'm hungry", etc.)
+- This is a **"hide" toggle** (inverted from v1.7): ON means you do **not** want to see food/gourmet posts
+- Jev distinguishes real food posts from food metaphors and food-themed artwork
+- Posts containing emotionally heavy expressions (deaths, bodies, critical conditions) stay hidden
+
+### Hide AI alarmists (Japan & worldwide)
+Turn on **Hide AI alarmists** to hide sensational "AI scaremonger" posts — AGI-doom, "humanity ends", "singularity is here", "AI will take every job", and similar unfounded panic/hype
+- Jev separates alarmist hype from **objective AI news, tooling, artwork, technical explainers, calm debate, and AI-regulation reporting**
+- Works for both Japanese and English posts
 
 ### Effects toggles
 - **Splash**: the blue-bird splash on page load (default ON)
@@ -140,9 +157,9 @@ All settings are saved automatically and persist across sessions.
 |---|---|
 | Type | Chrome Extension (Manifest V3) |
 | Target sites | `*.x.com/*`, `*.twitter.com/*` |
-| Permissions | `storage` only (no data collection) |
+| Permissions | `storage`, `alarms`, `offscreen`; host access to `openrouter.ai` / `api.typesafe.ai` for Jev |
 | Runtime | None (no dependencies, plain JS) |
-| Files | `manifest.json` / `filters.js` / `i18n.js` / `content.js` / `popup.html` / `popup.js` / `background.js` / `offscreen.html` / `offscreen.js` / `icons/` |
+| Files | `manifest.json` / `filters.js` / `i18n.js` / `jev.js` / `content.js` / `popup.html` / `popup.js` / `background.js` / `offscreen.html` / `offscreen.js` / `icons/` |
 
 ### Tech notes
 - **Text rewriting**: a `MutationObserver` follows the SPA's dynamic content. Inputs, textareas, and contenteditable elements are left untouched so composing tweets never breaks
@@ -161,6 +178,7 @@ x2twitter/
 ├── background.js      # Posting-timer alarm + chime playback
 ├── filters.js         # Filter word definitions (strong/weak signals, exceptions, regexes, account lists)
 ├── i18n.js            # UI text (Japanese/English) and language detection
+├── jev.js             # Jev (TypeSafe) decision layer — typed judgments over post text
 ├── content.js         # Main logic (rewrite, effects, filter application)
 ├── popup.html         # Extension popup UI
 ├── popup.js           # Popup control
@@ -194,6 +212,7 @@ cd x2twitter && zip -r ../x2twitter.zip . -x "*.DS_Store"
 ## ⚠️ Notes
 
 - This is a **browser extension** that hooks into page rendering in your browser. It **does not access or modify X (formerly Twitter)'s internal systems, servers, or data in any way — all processing happens locally inside your browser**
+- **Jev is optional and off if no API key is set.** When enabled, the text of posts being judged is sent to OpenRouter/TypeSafe. Your API key is stored only in `chrome.storage.local`; turn the Jev toggle off to stay fully offline
 - An **unofficial add-on** with no affiliation to X (formerly Twitter)
 - Because page structures change, behavior may break
 - Rewriting "X" into "Twitter 2" can occasionally change text you didn't intend
