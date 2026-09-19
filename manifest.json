@@ -1,13 +1,9 @@
 {
   "manifest_version": 3,
   "name": "X to Twitter 2",
-  "version": "1.8.0",
-  "description": "x.comを優しいTwitterに戻すChrome拡張。青い鳥・Twitter 2表記・Jev AI意思決定による高精度フィルター",
+  "version": "1.8.1",
+  "description": "x.comを優しいTwitterに戻すChrome拡張。青い鳥・Twitter 2表記・完全ローカルなワードフィルター",
   "permissions": ["storage", "alarms", "offscreen"],
-  "host_permissions": [
-    "https://openrouter.ai/*",
-    "https://api.typesafe.ai/*"
-  ],
   "background": {
     "service_worker": "background.js"
   },
@@ -27,7 +23,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.x.com/*", "*://*.twitter.com/*"],
-      "js": ["filters.js", "i18n.js", "jev.js", "content.js"],
+      "js": ["filters.js", "i18n.js", "content.js"],
       "run_at": "document_idle",
       "all_frames": true
     }

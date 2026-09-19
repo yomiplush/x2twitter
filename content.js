@@ -33,22 +33,6 @@
   let currentHideFood = true;
   let currentHideAiHype = true;
 
-  // ===== Jev（TypeSafe）意思決定レイヤー =====
-  // 正規表現は「即時判定＋候補ゲート＋フォールバック」、Jev は候補の最終判断を担当する。
-  // しきい値 0.6 / 0.4 は開発時に Jev へ実データを投げて校正した値
-  // （ネガティブ判定: 真の例は 0.77 以上、紛らわしい良性例は 0.22 以下に分離）。
-  const JEV_HIDE_T = 0.6;
-  const JEV_SHOW_T = 0.4;
-  const JEV_CONCURRENCY = 3;
-  const JEV_BUDGET_PER_SESSION = 500;
-  let currentJevOn = true;
-  let currentJevKey = "";
-  let jevBudget = JEV_BUDGET_PER_SESSION;
-  const jevQueue = [];
-  let jevRunning = 0;
-  let artState = new WeakMap();       // article -> { jev, requested }
-  const pendingByText = new Map();    // text -> Set<article>
-
   // 現在ログイン中の自分のハンドルを取得（プロフィールタブのhrefから）
   function getMyHandle() {
     const profile = document.querySelector('[data-testid="AppTabBar_Profile_Link"]');
@@ -116,7 +100,7 @@
     return hits;
   }
 
-  // 正規表現によるカテゴリ判定（即時判定・候補ゲート・Jev のフォールバック）
+  // 正規表現によるカテゴリ判定（完全ローカル・API不使用）
   function regexCategories(t) {
     return {
       negative: !NEGATIVE_EXCEPT.test(t) && (NEGATIVE_STRONG.test(t) || countWeakHits(t) >= 2),
@@ -124,102 +108,6 @@
       gourmet: FOOD_SIGNAL.test(t),
       aiHype: AI_HYPE_SIGNAL.test(t),
     };
-  }
-
-  // ===== Jev の確率をコード側ポリシーで解釈する =====
-  // 高信頼(>=0.6)は隠す、低信頼(<=0.4)は見せる、その間は正規表現でタイブレーク。
-  function pickByJev(prob, fallback) {
-    if (typeof prob !== "number") return fallback;
-    if (prob >= JEV_HIDE_T) return true;
-    if (prob <= JEV_SHOW_T) return false;
-    return fallback;
-  }
-  function jevCategories(jev, fallback) {
-    return {
-      negative: pickByJev(jev.negative, fallback.negative),
-      disaster: pickByJev(jev.disaster, fallback.disaster),
-      gourmet: pickByJev(jev.gourmet, fallback.gourmet),
-      aiHype: pickByJev(jev.aiHype, fallback.aiHype),
-    };
-  }
-
-  function jevEnabled() {
-    return currentJevOn && !!currentJevKey && typeof X2TJev !== "undefined" && X2TJev.isReady();
-  }
-
-  function configureJev() {
-    if (typeof X2TJev === "undefined") return;
-    X2TJev.configure({ apiKey: currentJevKey });
-    X2TJev.clearCache();
-    pendingByText.clear();
-    artState = new WeakMap();
-  }
-
-  // 今の設定で Jev に尋ねる必要があるカテゴリ。
-  // アート集中モードではコード側で「アート以外を隠す」ので Jev は不要（コスト削減）。
-  function wantedCategories() {
-    if (currentArt) return { negative: false, disaster: false, gourmet: false, aiHype: false };
-    return {
-      negative: filterOn,
-      disaster: currentHideDisaster,
-      gourmet: currentHideFood,
-      aiHype: currentHideAiHype,
-    };
-  }
-
-  // Jev に回す候補か。
-  // 正規表現シグナルに加え、ある程度の長さの本文も対象にして再現率を上げる
-  // （URL・メンションだけの投稿や極端に短い投稿は除外し、呼び出しコストを抑制）。
-  function isJevCandidate(t) {
-    if (!t) return false;
-    if (NEGATIVE_STRONG.test(t) || DISASTER_SIGNAL.test(t) || FOOD_SIGNAL.test(t) || AI_HYPE_SIGNAL.test(t)) return true;
-    if (countWeakHits(t) >= 1) return true;
-    const stripped = t.replace(/https?:\/\/\S+/g, "").replace(/@[A-Za-z0-9_]+/g, "").trim();
-    return stripped.length >= 24;
-  }
-
-  function maybeRequestJev(art, t) {
-    if (!jevEnabled() || !isJevCandidate(t)) return;
-    const want = wantedCategories();
-    if (!want.negative && !want.disaster && !want.gourmet && !want.aiHype) return;
-    const st = artState.get(art) || {};
-    if (st.jev || st.requested) return;
-    st.requested = true;
-    artState.set(art, st);
-    if (!pendingByText.has(t)) pendingByText.set(t, new Set());
-    pendingByText.get(t).add(art);
-    enqueueJev(t, want);
-  }
-
-  function enqueueJev(text, want) {
-    if (jevBudget <= 0) return;
-    jevQueue.push({ text, want });
-    drainJev();
-  }
-
-  function drainJev() {
-    while (jevRunning < JEV_CONCURRENCY && jevQueue.length > 0 && jevBudget > 0) {
-      const job = jevQueue.shift();
-      jevRunning++;
-      jevBudget--;
-      X2TJev.classify(job.text, job.want)
-        .then((res) => { if (res) applyJevResult(job.text, res); })
-        .catch(() => {})
-        .finally(() => { jevRunning--; drainJev(); });
-    }
-  }
-
-  function applyJevResult(text, res) {
-    const arts = pendingByText.get(text);
-    pendingByText.delete(text);
-    if (!arts) return;
-    for (const art of arts) {
-      if (!art || !art.isConnected) continue;
-      const st = artState.get(art) || {};
-      st.jev = res;
-      artState.set(art, st);
-      applyArticle(art);
-    }
   }
 
   // ツイート本文テキストを取得（短いほど「テキスト控えめ」）
@@ -258,8 +146,8 @@
   }
 
   // 非表示にするべきか判定（自分の投稿は常に除外）。
-  // アカウント系・暴言はコードで確定。ネガティブ/災害/グルメは Jev の判断を優先し、
-  // Jev が無い/未確定のときは正規表現で即時判定する。
+  // アカウント系・暴言はコードで確定。ネガティブ/災害/グルメ/AI驚き屋は
+  // filters.js のワード（正規表現）で判定する。外部APIは一切使わない。
   function computeHide(art) {
     if (isOwnTweet(art)) return false;
     const author = getTweetHandle(art);
@@ -273,21 +161,18 @@
 
     if (currentArt) return !isArtPost(art);
 
-    const fallback = regexCategories(t);
-    const st = jevEnabled() ? artState.get(art) : null;
-    const cats = st && st.jev ? jevCategories(st.jev, fallback) : fallback;
-
+    const cats = regexCategories(t);
     if (currentHideDisaster && cats.disaster) return true;
     if (currentHideFood && cats.gourmet) return true;
     if (currentHideAiHype && cats.aiHype) return true;
-    if (filterOn && cats.negative && !NEGATIVE_EXCEPT.test(t)) {
+    if (filterOn && cats.negative) {
       if (isJapaneseMediaExempt(art)) return false;
       return true;
     }
     return false;
   }
 
-  // 判定を DOM に適用し、必要なら Jev へ問い合わせを予約する
+  // 判定を DOM に適用する
   function applyArticle(art) {
     if (!art || art.tagName !== "ARTICLE") return;
     if (computeHide(art)) {
@@ -297,7 +182,6 @@
       hiddenTweets.delete(art);
       if (art.style.display === "none") art.style.display = "";
     }
-    if (!currentArt) maybeRequestJev(art, art.textContent || "");
   }
 
   function isHomeTimeline() {
@@ -860,7 +744,7 @@
 
   fixAll();
   setInterval(() => { fixFavicon(); fixTitle(); myHandle = getMyHandle(); }, 3000);
-  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tJevOn", "x2tJevKey", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tJevOn, x2tJevKey, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult }) => {
+  chrome.storage.local.get(["x2tMode", "x2tFilter", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tArt", "x2tBusy", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult"], ({ x2tMode, x2tFilter, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tArt, x2tBusy, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult }) => {
     currentMode = x2tMode || "auto";
     currentLang = x2tLang || x2tDetectLang();
     currentSplash = x2tSplash !== false;
@@ -868,9 +752,6 @@
     currentHideDisaster = x2tHideDisaster !== false;
     currentHideFood = x2tHideFood !== false;
     currentHideAiHype = x2tHideAiHype !== false;
-    currentJevOn = x2tJevOn !== false;
-    currentJevKey = x2tJevKey || "";
-    configureJev();
     currentArt = !!x2tArt;
     currentBusy = !!x2tBusy;
     currentHideGov = !!x2tHideGov;
@@ -916,15 +797,6 @@
     }
     if (changes.x2tHideAiHype) {
       currentHideAiHype = changes.x2tHideAiHype.newValue !== false;
-      refilter();
-    }
-    if (changes.x2tJevOn) {
-      currentJevOn = changes.x2tJevOn.newValue !== false;
-      refilter();
-    }
-    if (changes.x2tJevKey) {
-      currentJevKey = changes.x2tJevKey.newValue || "";
-      configureJev();
       refilter();
     }
     if (changes.x2tHideGov) {

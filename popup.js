@@ -6,9 +6,6 @@ const busyToggle = document.getElementById("busy");
 const disasterToggle = document.getElementById("hideDisaster");
 const foodToggle = document.getElementById("hideFood");
 const aiHypeToggle = document.getElementById("hideAiHype");
-const jevOnToggle = document.getElementById("jevOn");
-const jevKeyInput = document.getElementById("jevKey");
-const jevStatus = document.getElementById("jevStatus");
 const hideGovToggle = document.getElementById("hideGov");
 const hideNewsToggle = document.getElementById("hideNews");
 const hideTrendsToggle = document.getElementById("hideTrends");
@@ -96,18 +93,7 @@ function render(lang) {
   document.querySelectorAll("[data-i18n-title]").forEach((el) => {
     el.title = x2tText(lang, el.dataset.i18nTitle);
   });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-    el.placeholder = x2tText(lang, el.dataset.i18nPlaceholder);
-  });
   for (const b of langButtons) b.classList.toggle("active", b.dataset.lang === lang);
-  renderJevStatus();
-}
-
-function renderJevStatus() {
-  let key = "jevStatusNoKey";
-  if (!jevOnToggle.checked) key = "jevStatusOff";
-  else if (jevKeyInput.value.trim()) key = "jevStatusActive";
-  jevStatus.textContent = x2tText(currentLang, key);
 }
 
 function saveCustom() {
@@ -117,8 +103,8 @@ function saveCustom() {
 }
 
 chrome.storage.local.get(
-  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tJevOn", "x2tJevKey", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
-  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tJevOn, x2tJevKey, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
+  ["x2tMode", "x2tFilter", "x2tArt", "x2tBusy", "x2tHideDisaster", "x2tHideFood", "x2tHideAiHype", "x2tHideGov", "x2tHideNews", "x2tHideTrends", "x2tHideFin", "x2tHideInsult", "x2tSplash", "x2tBirds", "x2tLang", "x2tCustom", "x2tWallpaperUrl", "x2tWallpaperOn", "x2tTimerEnd", "x2tTimerDone", "x2tTimerSound"],
+  ({ x2tMode, x2tFilter, x2tArt, x2tBusy, x2tHideDisaster, x2tHideFood, x2tHideAiHype, x2tHideGov, x2tHideNews, x2tHideTrends, x2tHideFin, x2tHideInsult, x2tSplash, x2tBirds, x2tLang, x2tCustom, x2tWallpaperUrl, x2tWallpaperOn, x2tTimerEnd, x2tTimerDone, x2tTimerSound }) => {
     render(x2tLang || x2tDetectLang());
     setActive(x2tMode || "auto");
     filterToggle.checked = !!x2tFilter;
@@ -127,8 +113,6 @@ chrome.storage.local.get(
     disasterToggle.checked = x2tHideDisaster !== false;
     foodToggle.checked = x2tHideFood !== false;
     aiHypeToggle.checked = x2tHideAiHype !== false;
-    jevOnToggle.checked = x2tJevOn !== false;
-    jevKeyInput.value = x2tJevKey || "";
     hideGovToggle.checked = !!x2tHideGov;
     hideNewsToggle.checked = !!x2tHideNews;
     hideTrendsToggle.checked = !!x2tHideTrends;
@@ -143,7 +127,6 @@ chrome.storage.local.get(
     wallpaperToggle.checked = x2tWallpaperOn !== false;
     wallpaperUrl.value = x2tWallpaperUrl || "";
     timerSound.checked = x2tTimerSound !== false;
-    renderJevStatus();
     if (x2tTimerDone) {
       timerDisplay.textContent = "00:00:00";
       document.body.classList.add("timer-done");
@@ -207,18 +190,6 @@ foodToggle.addEventListener("change", () => {
 
 aiHypeToggle.addEventListener("change", () => {
   chrome.storage.local.set({ x2tHideAiHype: aiHypeToggle.checked });
-});
-
-jevOnToggle.addEventListener("change", () => {
-  chrome.storage.local.set({ x2tJevOn: jevOnToggle.checked });
-  renderJevStatus();
-});
-
-jevKeyInput.addEventListener("input", renderJevStatus);
-
-jevKeyInput.addEventListener("change", () => {
-  chrome.storage.local.set({ x2tJevKey: jevKeyInput.value.trim() });
-  renderJevStatus();
 });
 
 hideGovToggle.addEventListener("change", () => {
